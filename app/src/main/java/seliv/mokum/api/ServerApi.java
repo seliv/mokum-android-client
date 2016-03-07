@@ -10,6 +10,7 @@ import seliv.mokum.api.model.CommentRequest;
 import seliv.mokum.api.model.Comments;
 import seliv.mokum.api.model.LikeResult;
 import seliv.mokum.api.model.Likes;
+import seliv.mokum.api.model.Page;
 import seliv.mokum.api.model.Post;
 import seliv.mokum.api.model.PostRequest;
 import seliv.mokum.net.Connection;
@@ -26,10 +27,16 @@ public class ServerApi {
     private static final String POST_URL = API_URL + "/posts.json";
     private static final String LIKE_URL = API_URL + "/%d/likes";
 
+    private static final String PAGE_URL = ROOT_URL + "/%s";
     private static final String COMMENTS_URL = ROOT_URL + "/%s/comments.json";
     private static final String LIKES_URL = ROOT_URL + "%s/likes.json";
 
     private static Connection connection;
+
+    @Deprecated
+    public static void initConnection(Connection connection) {
+        ServerApi.connection = connection;
+    }
 
     public static Comment sendComment(long postId, CommentRequest commentRequest) {
         String url = String.format(COMMENT_URL, postId);
@@ -71,6 +78,18 @@ public class ServerApi {
             }
             JSONObject json = jsonWithCode.getJson();
             return LikeResult.fromJson(json.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Page loadPage(String pageUrl) {
+        String url = String.format(PAGE_URL, pageUrl);
+        try {
+            JsonWithCode jsonWithCode = connection.doGet(url);
+            JSONObject json = jsonWithCode.getJson();
+            return Page.fromJson(json.toString());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
