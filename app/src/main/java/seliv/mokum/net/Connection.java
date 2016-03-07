@@ -23,16 +23,16 @@ public class Connection {
         this.token = token;
     }
 
-    private JsonWithCode doGet(String urlString) throws IOException {
+    public JsonWithCode doGet(String urlString) throws IOException {
         HttpURLConnection urlConnection = initUrlConnection(urlString);
         return getJsonWithCode(urlConnection);
     }
 
-    private JsonWithCode doPost(String urlString) throws IOException {
+    public JsonWithCode doPost(String urlString) throws IOException {
         return doPost(urlString, null);
     }
 
-    private JsonWithCode doPost(String urlString, JSONObject jsonObject) throws IOException {
+    public JsonWithCode doPost(String urlString, JSONObject jsonObject) throws IOException {
         HttpURLConnection urlConnection = initUrlConnection(urlString);
         urlConnection.setRequestMethod("POST");
         urlConnection.setDoInput(true);
@@ -50,7 +50,7 @@ public class Connection {
         return getJsonWithCode(urlConnection);
     }
 
-    private JsonWithCode doDelete(String urlString) throws IOException {
+    public JsonWithCode doDelete(String urlString) throws IOException {
         HttpURLConnection urlConnection = initUrlConnection(urlString);
         urlConnection.setRequestMethod("DELETE");
         urlConnection.setDoInput(true);
