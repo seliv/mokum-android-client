@@ -19,6 +19,8 @@ import seliv.mokum.ui.EntryWidget;
 import seliv.mokum.ui.PostWidget;
 
 public class MainActivity extends AppCompatActivity {
+    private String currentUrl = "index.json";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,9 +33,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        ScrollView scrollView = (ScrollView) findViewById(R.id.mainScrollView);
+//        ScrollView scrollView = (ScrollView) findViewById(R.id.mainScrollView);
 //        processRequest(scrollView);
-        new ContentLoader().execute("index.json");
+        goToUrl("index.json");
+    }
+
+    public void goToUrl(String url) {
+        currentUrl = url;
+        new ContentLoader().execute(url);
     }
 
     //    private void processRequest(View view) {
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             Map<Long, User> users = page.getUsers();
 
             LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
+            contentLayout.removeAllViews();
             if (entires.size() > 0) {
                 for (Entry entry : entires) {
                     EntryWidget entryWidget = new EntryWidget(contentLayout.getContext());

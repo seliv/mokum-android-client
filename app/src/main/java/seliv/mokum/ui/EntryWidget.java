@@ -22,7 +22,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -30,6 +29,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import seliv.mokum.MainActivity;
 import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Attachment;
 import seliv.mokum.api.model.Comment;
@@ -43,8 +43,6 @@ import seliv.mokum.api.model.User;
  * Created by aselivanov on 2/5/2016.
  */
 public class EntryWidget extends LinearLayout {
-    public static String token; // TODO: Hack, replace with correct architectural solution
-
     private TextView userText;
     private TextView entryText;
     private TextView timeText;
@@ -168,7 +166,7 @@ public class EntryWidget extends LinearLayout {
 
         SpannableStringBuilder userNameBuilder = new SpannableStringBuilder();
         userNameBuilder.append(user.getDisplayName());
-        final String userUrl = "https://mokum.place/" + users.get(userId).getName() + ".json";
+        final String userUrl = users.get(userId).getName() + ".json";
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
                 System.out.println("userUrl = " + userUrl);
@@ -283,7 +281,7 @@ public class EntryWidget extends LinearLayout {
                 int start = likesBuilder.length();
                 likesBuilder.append(users.get(likeUserId).getDisplayName());
                 int end = likesBuilder.length();
-                final String userUrl = "https://mokum.place/" + users.get(likeUserId).getName() + ".json";
+                final String userUrl = users.get(likeUserId).getName() + ".json";
                 ClickableSpan clickable = new ClickableSpan() {
                     public void onClick(View view) {
                         System.out.println("userUrl = " + userUrl);
@@ -362,7 +360,7 @@ public class EntryWidget extends LinearLayout {
                 int start = commentBuilder.length();
                 commentBuilder.append(users.get(comment.getUserId()).getDisplayName());
                 int end = commentBuilder.length();
-                final String userUrl = "https://mokum.place/" + users.get(comment.getUserId()).getName() + ".json";
+                final String userUrl = users.get(comment.getUserId()).getName() + ".json";
                 ClickableSpan clickable = new ClickableSpan() {
                     public void onClick(View view) {
                         System.out.println("userUrl = " + userUrl);
@@ -437,6 +435,9 @@ public class EntryWidget extends LinearLayout {
 //        intent.putExtra("token", token);
 //        intent.putExtra("url", url);
 //        getContext().startActivity(intent);
+        // TODO: Replace with neat interfaces
+        MainActivity activity = (MainActivity) getContext();
+        activity.goToUrl(url);
     }
 
     private static class AvatarLoader extends AsyncTask<String, Void, Bitmap> {
