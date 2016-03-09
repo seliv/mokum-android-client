@@ -16,6 +16,7 @@ import seliv.mokum.api.model.Page;
 import seliv.mokum.api.model.User;
 import seliv.mokum.net.Connection;
 import seliv.mokum.ui.EntryWidget;
+import seliv.mokum.ui.NavigationWidget;
 import seliv.mokum.ui.PostWidget;
 
 public class MainActivity extends AppCompatActivity {
@@ -95,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
             contentLayout.removeAllViews();
             if (entires.size() > 0) {
+                NavigationWidget navigationWidget = new NavigationWidget(contentLayout.getContext());
+                navigationWidget.setUrls(page.getOlderEntriesUrl(), page.getNewerEntriesUrl());
+                contentLayout.addView(navigationWidget);
                 for (Entry entry : entires) {
                     EntryWidget entryWidget = new EntryWidget(contentLayout.getContext());
                     entryWidget.setEntry(users, entry);
