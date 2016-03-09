@@ -299,7 +299,7 @@ public class EntryWidget extends LinearLayout {
                 int start = likesBuilder.length();
                 likesBuilder.append(String.valueOf(moreLikes)).append(" more");
                 int end = likesBuilder.length();
-                final String likesUrl = "https://mokum.place" + entryUrl + "/likes.json";
+                final String likesUrl = entryUrl;
                 ClickableSpan clickable = new ClickableSpan() {
                     public void onClick(View view) {
                         likesIcon.setVisibility(View.GONE);
@@ -405,7 +405,7 @@ public class EntryWidget extends LinearLayout {
                     moreView.setTextSize(12.0f);
 
                     if (entryUrl != null) {
-                        final String url = "https://mokum.place" + entryUrl + "/comments.json";
+                        final String url = entryUrl;
                         commentsView.setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
