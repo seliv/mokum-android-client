@@ -92,7 +92,9 @@ public class CommentWidget extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         int mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-        ScaleAnimation anim = new ScaleAnimation(0,1,0,1);
+//        this.setScaleY(0.0f);
+//        this.animate().scaleY(1.0f).setDuration(mShortAnimationDuration);
+        ScaleAnimation anim = new ScaleAnimation(1,1,0,1);
         anim.setDuration(mShortAnimationDuration);
         anim.setFillAfter(true);
         this.startAnimation(anim);
