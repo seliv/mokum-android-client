@@ -3,8 +3,9 @@ package seliv.mokum;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -35,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        ScrollView scrollView = (ScrollView) findViewById(R.id.mainScrollView);
-//        processRequest(scrollView);
         goToUrl("index.json");
     }
 
@@ -45,28 +44,18 @@ public class MainActivity extends AppCompatActivity {
         new ContentLoader().execute(url);
     }
 
-    //    private void processRequest(View view) {
-//        //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-////                        .setAction("Action", null).show();
-////                String url = "https://mokum.place/index.json";
-//        int mLongAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
-//        view.animate()
-//                .alpha(0.7f)
-//                .setDuration(mLongAnimationDuration)
-//                .setListener(new AnimatorListenerAdapter() {
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-////                        mLoadingView.setVisibility(View.GONE);
-//                    }
-//                });
-//        ProgressBar progressBar = (ProgressBar) findViewById(R.id.loading_progress_bar);
-//        progressBar.setVisibility(View.VISIBLE);
-//
-//        VISITED_URLS.push(url);
-//        new ContentLoader().execute(url);
-//    }
-//
     private class ContentLoader extends AsyncTask<String, Void, Page> {
+        @Override
+        protected void onPreExecute() {
+            int mLongAnimationDuration = getResources().getInteger(android.R.integer.config_longAnimTime);
+            View view = findViewById(R.id.scrollContentLayout);
+            view.animate()
+                    .alpha(0.7f)
+                    .setDuration(mLongAnimationDuration);
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected Page doInBackground(String... params) {
             String url = params[0];
@@ -75,12 +64,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Page page) {
+            View view = findViewById(R.id.scrollContentLayout);
+            int mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            view.animate()
+                    .alpha(1.0f)
+                    .setDuration(mShortAnimationDuration);
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+            progressBar.setVisibility(View.GONE);
             setContent(page);
         }
     }
 
     private void setContent(Page page) {
-//        ScrollView scrollView = (ScrollView) findViewById(R.id.mainScrollView);
         if (page == null) {
 //            Snackbar.make(view, "No JSON returned", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
