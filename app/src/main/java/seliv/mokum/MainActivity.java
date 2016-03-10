@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Entry;
@@ -20,7 +21,7 @@ import seliv.mokum.ui.NavigationWidget;
 import seliv.mokum.ui.PostWidget;
 
 public class MainActivity extends AppCompatActivity {
-    private String currentUrl = "index.json";
+    private final Stack<String> visitedUrls = new Stack<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToUrl(String url) {
-        currentUrl = url;
+        visitedUrls.push(url);
         new ContentLoader().execute(url);
     }
 
@@ -110,6 +111,18 @@ public class MainActivity extends AppCompatActivity {
                 contentLayout.addView(textView);
             }
             contentLayout.addView(new PostWidget(contentLayout.getContext()));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!visitedUrls.isEmpty()) {
+            visitedUrls.pop();
+        }
+        if (visitedUrls.isEmpty()) {
+            super.onBackPressed();
+        } else {
+            goToUrl(visitedUrls.pop());
         }
     }
 }
