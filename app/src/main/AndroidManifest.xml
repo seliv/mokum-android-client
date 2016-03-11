@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="seliv.mokum">
 
+    <!--<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />-->
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--<uses-permission android:name="android.permission.USE_CREDENTIALS" />-->
 
     <application
         android:allowBackup="true"
@@ -20,5 +23,4 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity"></activity>
     </application>
-
 </manifest>

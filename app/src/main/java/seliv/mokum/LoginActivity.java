@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(view.getContext(), MainActivity.class);
         String value = tokenEditText.getText().toString();
         intent.putExtra("token", value);
+        AuthManager.saveAuthToken(this, value);
         view.getContext().startActivity(intent);
     }
 }

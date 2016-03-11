@@ -10,6 +10,12 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        String authToken = AuthManager.getAuthToken(this);
+        if (authToken != null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("token", authToken);
+            startActivity(intent);
+        }
     }
 
     public void signIn(View view) {
