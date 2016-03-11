@@ -13,7 +13,12 @@ public class Page {
     private String newer_entries_url;
 
     public static Page fromJson(String json) {
-        return GsonUtil.getGsonInstance().fromJson(json, Page.class);
+        Page page = GsonUtil.getGsonInstance().fromJson(json, Page.class);
+        // Basic error validation
+        if ((page.entries == null) || (page.users == null)) {
+            return null;
+        }
+        return page;
     }
 
     public List<Entry> getEntries() {
