@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.InputType;
 import android.view.View;
 import android.view.animation.ScaleAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,6 +44,16 @@ public class CommentWidget extends LinearLayout {
         commentEdit.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         commentEdit.setMaxLines(6);
         commentEdit.setText("Test comment from Android.");
+
+//        commentEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    ((Activity)getContext()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+//                }
+//            }
+//        });
+        commentEdit.requestFocus();
 
         commentButton = new Button(context);
         commentButton.setLayoutParams(params);
@@ -98,6 +109,10 @@ public class CommentWidget extends LinearLayout {
         anim.setDuration(mShortAnimationDuration);
         anim.setFillAfter(true);
         this.startAnimation(anim);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(commentEdit, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     private static class CommentSender extends AsyncTask<Void, Void, CommentSender.CommentSendingResult> {
