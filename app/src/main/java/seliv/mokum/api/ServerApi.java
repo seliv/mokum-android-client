@@ -13,6 +13,7 @@ import seliv.mokum.api.model.Likes;
 import seliv.mokum.api.model.Page;
 import seliv.mokum.api.model.Post;
 import seliv.mokum.api.model.PostRequest;
+import seliv.mokum.api.model.WhoAmI;
 import seliv.mokum.net.Connection;
 import seliv.mokum.net.JsonWithCode;
 
@@ -30,6 +31,8 @@ public class ServerApi {
     private static final String PAGE_URL = ROOT_URL + "/%s";
     private static final String COMMENTS_URL = ROOT_URL + "/%s/comments.json";
     private static final String LIKES_URL = ROOT_URL + "%s/likes.json";
+
+    private static final String WHO_AM_I_URL = API_URL + "/whoami.json";
 
     private static Connection connection;
 
@@ -114,6 +117,18 @@ public class ServerApi {
             JsonWithCode jsonWithCode = connection.doGet(url);
             JSONObject json = jsonWithCode.getJson();
             return Likes.fromJson(json.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static WhoAmI askWhoAmI() {
+        String url = String.format(WHO_AM_I_URL);
+        try {
+            JsonWithCode jsonWithCode = connection.doGet(url);
+            JSONObject json = jsonWithCode.getJson();
+            return WhoAmI.fromJson(json.toString());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
