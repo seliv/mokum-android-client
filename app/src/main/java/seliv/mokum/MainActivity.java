@@ -36,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        goToUrl("index.json");
+        String url = getIntent().getStringExtra("url");
+        if (url != null) {
+            goToUrl(url);
+        } else {
+            goToUrl("index.json");
+        }
     }
 
     public void goToUrl(String url) {

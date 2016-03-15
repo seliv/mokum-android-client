@@ -91,7 +91,7 @@ public class ServerApi {
         String url = String.format(PAGE_URL, pageUrl);
         try {
             JsonWithCode jsonWithCode = connection.doGet(url);
-            JSONObject json = jsonWithCode.getJson();
+            JSONObject json = jsonWithCode.getJson(); // TODO: Handle null here
             return Page.fromJson(json.toString());
         } catch (IOException e) {
             e.printStackTrace();

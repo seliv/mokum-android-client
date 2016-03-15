@@ -36,9 +36,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Best of Mokum, in five languages: ..."
-        android:id="@+id/textView2"
+        android:text="Best of Mokum, in five languages: "
+        android:id="@+id/bestTextView"
         android:layout_below="@+id/textView1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Everything (firehose), in five languages: "
+        android:id="@+id/everythingTextView"
+        android:layout_below="@+id/bestTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
