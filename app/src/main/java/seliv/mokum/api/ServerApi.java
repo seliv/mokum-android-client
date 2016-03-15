@@ -26,7 +26,7 @@ public class ServerApi {
 
     private static final String COMMENT_URL = API_URL + "/posts/%d/comments.json";
     private static final String POST_URL = API_URL + "/posts.json";
-    private static final String LIKE_URL = API_URL + "/%d/likes";
+    private static final String LIKE_URL = API_URL + "/posts/%d/likes";
 
     private static final String PAGE_URL = ROOT_URL + "/%s";
     private static final String COMMENTS_URL = ROOT_URL + "/%s/comments.json";
