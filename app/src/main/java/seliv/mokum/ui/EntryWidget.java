@@ -102,13 +102,18 @@ public class EntryWidget extends RelativeLayout {
         likesProgressBar.setVisibility(View.GONE);
 
         int pxSize = getPxSize(50);
+        LinearLayout avatarContainer = new LinearLayout(context);
+        avatarContainer.setLayoutParams(params);
+        avatarContainer.setPadding(0, getPxSize(7), getPxSize(4), 0);
         avatar = new ImageView(context);
         avatar.setLayoutParams(params);
         avatar.setMaxWidth(pxSize);
         avatar.setMaxHeight(pxSize);
         avatar.setMinimumWidth(pxSize);
         avatar.setMinimumHeight(pxSize);
-        avatar.setPadding(0, getPxSize(7), getPxSize(4), 0);
+        avatar.setPadding(1, 1, 1, 1);
+        avatar.setBackgroundColor(Color.rgb(193, 193, 193));
+        avatarContainer.addView(avatar);
 
 //        params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 //        likeButton = new Button(context);
@@ -156,7 +161,7 @@ public class EntryWidget extends RelativeLayout {
         commentsView.setOrientation(LinearLayout.VERTICAL);
         postAndComments.addView(commentsView);
 
-        addView(avatar);
+        addView(avatarContainer);
         addView(postAndComments);
 //        addView(likeButton);
 //        addView(hideButton);
