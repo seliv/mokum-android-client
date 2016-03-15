@@ -4,16 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.text.Html;
+import android.text.Layout;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.LeadingMarginSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -22,6 +27,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -42,7 +48,7 @@ import seliv.mokum.api.model.User;
 /**
  * Created by aselivanov on 2/5/2016.
  */
-public class EntryWidget extends LinearLayout {
+public class EntryWidget extends RelativeLayout {
     private TextView userText;
     private TextView entryText;
     private TextView timeText;
@@ -57,7 +63,6 @@ public class EntryWidget extends LinearLayout {
 
     public EntryWidget(Context context) {
         super(context);
-        setOrientation(LinearLayout.HORIZONTAL);
         setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         initChildren(context);
     }
@@ -76,6 +81,7 @@ public class EntryWidget extends LinearLayout {
         userText.setTypeface(userText.getTypeface(), 1); // 1 = bold
         entryText = new TextView(context);
         entryText.setLayoutParams(params);
+        entryText.setMinLines(3);
         timeText = new TextView(context);
         timeText.setLayoutParams(params);
         timeText.setTextSize(11.0f);
@@ -175,12 +181,17 @@ public class EntryWidget extends LinearLayout {
         };
         userNameBuilder.setSpan(clickable, 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userText.setText(userNameBuilder);
         userText.setMovementMethod(LinkMovementMethod.getInstance());
         userText.setHighlightColor(Color.TRANSPARENT);
         userText.setClickable(true);
 
-        entryText.setText(entry.getText());
+        String textOfEntry = entry.getText();
+        AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
+        SpannableString spannableEntryText = new SpannableString(textOfEntry);
+        spannableEntryText.setSpan(span, 0, textOfEntry.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        entryText.setText(spannableEntryText);
         timeText.setText(DateUtils.getRelativeTimeSpanString(entry.getPublishedAt().getTime()));
 
         setAttachments(entry.getUrl(), users, entry.getAttachments());
@@ -438,6 +449,26 @@ public class EntryWidget extends LinearLayout {
         // TODO: Replace with neat interfaces
         MainActivity activity = (MainActivity) getContext();
         activity.goToUrl(url);
+    }
+
+    private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
+        @Override
+        public int getLeadingMarginLineCount() {
+            return 3;
+        }
+
+        @Override
+        public int getLeadingMargin(boolean first) {
+            if (first) {
+                return getPxSize(54);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
+        }
     }
 
     private static class AvatarLoader extends AsyncTask<String, Void, Bitmap> {
