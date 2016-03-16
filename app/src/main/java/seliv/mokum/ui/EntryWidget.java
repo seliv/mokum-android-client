@@ -1,7 +1,6 @@
 package seliv.mokum.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -11,7 +10,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.text.Layout;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.format.DateUtils;
@@ -76,11 +74,12 @@ public class EntryWidget extends RelativeLayout {
     */
     private void initChildren(Context context) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams paramsFillHorizontal = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         userText = new TextView(context);
-        userText.setLayoutParams(params);
+        userText.setLayoutParams(paramsFillHorizontal);
         userText.setTypeface(userText.getTypeface(), 1); // 1 = bold
         entryText = new TextView(context);
-        entryText.setLayoutParams(params);
+        entryText.setLayoutParams(paramsFillHorizontal);
         entryText.setMinLines(3);
         timeText = new TextView(context);
         timeText.setLayoutParams(params);
@@ -192,11 +191,14 @@ public class EntryWidget extends RelativeLayout {
         userText.setHighlightColor(Color.TRANSPARENT);
         userText.setClickable(true);
 
-        String textOfEntry = entry.getText();
+        SpannableStringBuilder entryBuilder = new SpannableStringBuilder(Html.fromHtml(entry.getText()));
         AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
-        SpannableString spannableEntryText = new SpannableString(textOfEntry);
-        spannableEntryText.setSpan(span, 0, textOfEntry.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        entryText.setText(spannableEntryText);
+        entryBuilder.setSpan(span, 0, entryBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        entryText.setText(entryBuilder);
+        entryText.setMovementMethod(LinkMovementMethod.getInstance());
+        entryText.setHighlightColor(Color.TRANSPARENT);
+        entryText.setLinkTextColor(0xFF555599);
+
         timeText.setText(DateUtils.getRelativeTimeSpanString(entry.getPublishedAt().getTime()));
 
         setAttachments(entry.getUrl(), users, entry.getAttachments());

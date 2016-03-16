@@ -30,6 +30,7 @@ public class Entry {
     private Reason reason;
 
     private String text;
+    private String text_as_html;
     private String url;
 
     private long user_id;
@@ -50,7 +51,11 @@ public class Entry {
     }
 
     public String getText() {
-        return text;
+        if (text_as_html != null) {
+            return text_as_html;
+        } else {
+            return text;
+        }
     }
 
     public Date getPublishedAt() {
