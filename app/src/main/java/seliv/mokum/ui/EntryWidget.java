@@ -374,7 +374,7 @@ public class EntryWidget extends RelativeLayout {
                 iconView.setTextSize(12.0f);
 
                 SpannableStringBuilder commentBuilder = new SpannableStringBuilder();
-                commentBuilder.append(comment.getText()).append(" - ");
+                commentBuilder.append(Html.fromHtml(comment.getText())).append(" - ");
                 int start = commentBuilder.length();
                 commentBuilder.append(users.get(comment.getUserId()).getDisplayName());
                 int end = commentBuilder.length();
@@ -397,6 +397,7 @@ public class EntryWidget extends RelativeLayout {
                 commentView.setTextSize(12.0f);
                 commentView.setMovementMethod(LinkMovementMethod.getInstance());
                 commentView.setHighlightColor(Color.TRANSPARENT);
+                commentView.setLinkTextColor(0xFF555599);
                 commentView.setClickable(true);
 
                 LinearLayout singleCommentView = new LinearLayout(getContext());

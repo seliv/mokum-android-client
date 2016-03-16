@@ -14,6 +14,7 @@ public class Comment {
     private long id;
     private long post_id;
     private String text;
+    private String text_as_html;
     private Date updated_at;
     private long user_id;
 
@@ -26,7 +27,11 @@ public class Comment {
     }
 
     public String getText() {
-        return text;
+        if (text_as_html != null) {
+            return text_as_html;
+        } else {
+            return text;
+        }
     }
 
     public long getUserId() {
