@@ -341,16 +341,30 @@ public class EntryWidget extends RelativeLayout {
 
     private void setAttachments(String entryUrl, Map<Long, User> users, List<Attachment> attachments) {
         if (attachments.size() > 0) {
+            int maxHeight = Integer.MIN_VALUE;
+            for (Attachment attachment : attachments) {
+                if (attachment.getThumbHeight() > maxHeight) {
+                    maxHeight = attachment.getThumbHeight();
+                }
+            }
+            int pxHeight = getPxSize(maxHeight);
+            if (pxHeight > maxHeight * 2) {
+                pxHeight = maxHeight * 2; // Artificially limiting thumbnail size for extra-high DPI screens
+            }
             for (Attachment attachment : attachments) {
                 LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 ImageView imageView = new ImageView(getContext());
                 imageView.setLayoutParams(params);
-                int pxWidth = getPxSize(150);
-                int pxHeight = getPxSize(100);
+                // Never scaling the width up, only down.
+                int width = Math.min(attachment.getThumbWidth(), attachment.getThumbWidth() * maxHeight / attachment.getThumbHeight());
+                int pxWidth = getPxSize(width);
+                if (pxWidth > width * 2) {
+                    pxWidth = width * 2; // Artificially limiting thumbnail size for extra-high DPI screens
+                }
                 imageView.setMaxWidth(pxWidth);
-//                imageView.setMinimumWidth(pxWidth);
+                imageView.setMinimumWidth(pxWidth);
                 imageView.setMaxHeight(pxHeight);
-//                imageView.setMinimumHeight(pxHeight);
+                imageView.setMinimumHeight(pxHeight);
                 imageView.setPadding(0, getPxSize(7), getPxSize(4), 0);
 
                 String url = "https://mokum.place" + attachment.getThumbUrl();

@@ -12,17 +12,17 @@ import java.util.List;
 public class Attachment {
     private String attachment_file_name;
     private long id;
-    private long medium_height;
+    private int medium_height;
     private String medium_url;
-    private long medium_width;
+    private int medium_width;
     private String orientation;
-    private long original_height;
+    private int original_height;
     private String original_url;
-    private long original_width;
+    private int original_width;
     private long post_id;
-    private long thumb_height;
+    private int thumb_height;
     private String thumb_url;
-    private long thumb_width;
+    private int thumb_width;
     private Date updated_at;
     private long user_id;
 
@@ -34,11 +34,23 @@ public class Attachment {
         return id;
     }
 
+    public int  getMediumHeight() {
+        return medium_height;
+    }
+
+    public String getMediumUrl() {
+        return medium_url;
+    }
+
+    public int  getMediumWidth() {
+        return medium_width;
+    }
+
     public String getOrientation() {
         return orientation;
     }
 
-    public long getOriginalHeight() {
+    public int getOriginalHeight() {
         return original_height;
     }
 
@@ -46,7 +58,7 @@ public class Attachment {
         return original_url;
     }
 
-    public long getOriginalWidth() {
+    public int  getOriginalWidth() {
         return original_width;
     }
 
@@ -54,7 +66,7 @@ public class Attachment {
         return post_id;
     }
 
-    public long getThumbHeight() {
+    public int getThumbHeight() {
         return thumb_height;
     }
 
@@ -62,7 +74,7 @@ public class Attachment {
         return thumb_url;
     }
 
-    public long getThumbWidth() {
+    public int getThumbWidth() {
         return thumb_width;
     }
 }
