@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText("This feed has no entries (can be a private feed)");
                 contentLayout.addView(textView);
             }
-            contentLayout.addView(new PostWidget(contentLayout.getContext()));
         }
     }
 

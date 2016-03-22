@@ -4,15 +4,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.InputType;
 import android.view.View;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Post;
@@ -28,6 +26,8 @@ public class PostWidget extends LinearLayout {
     private Button cancelButton;
     private ProgressBar postProgressBar;
     private TextView resultText;
+
+    private Listener listener;
 
     public PostWidget(Context context) {
         super(context);
@@ -93,6 +93,26 @@ public class PostWidget extends LinearLayout {
                 new PostSender(PostWidget.this).execute(s);
             }
         });
+        cancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onDismissed();
+                }
+            }
+        });
+    }
+
+    void animateAppearance() {
+        int mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        ScaleAnimation anim = new ScaleAnimation(1,1,0,1);
+        anim.setDuration(mShortAnimationDuration);
+        anim.setFillAfter(true);
+        this.startAnimation(anim);
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     private static class PostSender extends AsyncTask<String, Void, PostSender.PostSendingResult> {
@@ -170,4 +190,7 @@ public class PostWidget extends LinearLayout {
         }
     }
 
+    interface Listener {
+        void onDismissed();
+    }
 }
