@@ -24,6 +24,7 @@ public class CommentRequest {
     }
 
     public static class Body {
+        private String platform = "Android App";
         private String text;
 
         public Body(String text) {

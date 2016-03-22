@@ -26,6 +26,7 @@ public class PostRequest {
     }
 
     public static class Body {
+        private String platform = "Android App";
         private List<String> timelines;
         private String text;
         private boolean comments_disabled;
