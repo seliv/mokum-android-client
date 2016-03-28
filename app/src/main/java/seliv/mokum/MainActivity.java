@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
 //                goToUrl("index.json");
 //                return true;
             case R.id.menu_logout:
+                AuthManager.saveAuthToken(this, null);
                 super.onBackPressed();
                 return true;
             default:
