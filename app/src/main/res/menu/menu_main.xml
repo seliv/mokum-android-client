@@ -9,6 +9,12 @@
     <!--<item android:id="@+id/menu_my_feed"-->
         <!--android:title="My Feed"-->
         <!--/>-->
+    <item
+        android:id="@+id/menu_history"
+        android:title="History">
+        <menu>
+        </menu>
+    </item>
     <item android:id="@+id/menu_logout"
         android:title="Sign out"
         />

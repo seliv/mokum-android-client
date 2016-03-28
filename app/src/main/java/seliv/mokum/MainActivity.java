@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -132,11 +133,20 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+        updateHistoryMenuItem(menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() >= HISTORY_MENU_BASE_ID) {
+            int i = item.getItemId() - HISTORY_MENU_BASE_ID;
+            if ((i >= 0) && (i < visitedUrls.size() - 1)) {
+                String url = visitedUrls.get(visitedUrls.size() - 2 - i);
+                goToUrl(url);
+                return true;
+            }
+        }
         switch (item.getItemId()) {
             case R.id.menu_reload:
                 if (!visitedUrls.empty()) {
@@ -157,6 +167,29 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        updateHistoryMenuItem(menu);
+        return true;
+    }
+
+    private static final int HISTORY_MENU_BASE_ID = 1000;
+
+    private void updateHistoryMenuItem(Menu menu) {
+        MenuItem historyItem = menu.findItem(R.id.menu_history);
+        if (visitedUrls.size() <= 1) {
+            historyItem.setEnabled(false);
+        } else {
+            historyItem.setEnabled(true);
+            SubMenu subMenu = historyItem.getSubMenu();
+            subMenu.clear();
+            for (int i = 0; i < Math.min(visitedUrls.size() - 1, 8); i++) {
+                String url = visitedUrls.get(visitedUrls.size() - 2 - i);
+                subMenu.add(0, HISTORY_MENU_BASE_ID + i, i, url);
+            }
         }
     }
 }
