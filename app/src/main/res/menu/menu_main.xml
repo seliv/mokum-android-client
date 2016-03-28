@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_reload"
+        android:title="Reload page"
+        />
+    <item android:id="@+id/menu_home_feed"
+        android:title="Home Feed"
+        />
+    <!--<item android:id="@+id/menu_my_feed"-->
+        <!--android:title="My Feed"-->
+        <!--/>-->
+    <item android:id="@+id/menu_logout"
+        android:title="Sign out"
+        />
+</menu>
