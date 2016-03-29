@@ -21,6 +21,10 @@ public class Page {
         return page;
     }
 
+    public String toJson() {
+        return GsonUtil.getGsonInstance().toJson(this);
+    }
+
     public List<Entry> getEntries() {
         return entries;
     }

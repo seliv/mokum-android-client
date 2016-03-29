@@ -26,7 +26,11 @@ import seliv.mokum.ui.NavigationWidget;
 import seliv.mokum.ui.PostWidget;
 
 public class MainActivity extends AppCompatActivity {
-    private final Stack<String> visitedUrls = new Stack<>();
+    private static final String BUNDLE_STATE_VISITED_URLS = "visitedUrls";
+    private static final String BUNDLE_STATE_CURRENT_PAGE = "currentPage";
+
+    private Stack<String> visitedUrls = new Stack<>();
+    private Page currentPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,21 @@ public class MainActivity extends AppCompatActivity {
         String token = getIntent().getStringExtra("token");
         Connection connection = new Connection(token);
         ServerApi.initConnection(connection);
+
+        if (savedInstanceState != null) {
+            String currentPageState = savedInstanceState.getString(BUNDLE_STATE_CURRENT_PAGE);
+            if (currentPageState != null) {
+                Page page = Page.fromJson(currentPageState);
+                setContent(page);
+            }
+            String[] visitedUrlsState = savedInstanceState.getStringArray(BUNDLE_STATE_VISITED_URLS);
+            if (visitedUrlsState != null) {
+                visitedUrls = new Stack<>();
+                for (String url : visitedUrlsState) {
+                    visitedUrls.push(url);
+                }
+            }
+        }
     }
 
     @Override
@@ -44,8 +63,28 @@ public class MainActivity extends AppCompatActivity {
         if (url != null) {
             goToUrl(url);
         } else {
-            goToUrl("index.json");
+            if (currentPage != null) {
+                setContent(currentPage);
+            } else {
+                if (!visitedUrls.empty()) {
+                    String lastUrl = visitedUrls.pop();
+                    goToUrl(lastUrl);
+                } else {
+                    goToUrl("index.json");
+                }
+            }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        String[] visitedUrlsState = visitedUrls.toArray(new String[visitedUrls.size()]);
+        outState.putStringArray(BUNDLE_STATE_VISITED_URLS, visitedUrlsState);
+        if (currentPage != null) {
+            String currentPageState = currentPage.toJson();
+            outState.putString(BUNDLE_STATE_CURRENT_PAGE, currentPageState);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     public void goToUrl(String url) {
@@ -73,22 +112,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Page page) {
-            View view = findViewById(R.id.scrollContentLayout);
-            int mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            view.animate()
-                    .alpha(1.0f)
-                    .setDuration(mShortAnimationDuration);
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
-            progressBar.setVisibility(View.GONE);
             setContent(page);
         }
     }
 
     private void setContent(Page page) {
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
+        int mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        contentLayout.animate()
+                .alpha(1.0f)
+                .setDuration(mShortAnimationDuration);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+        progressBar.setVisibility(View.GONE);
+
+        currentPage = page;
         if (page == null) {
 //            Snackbar.make(view, "No JSON returned", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
-            LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
             TextView textView = new TextView(contentLayout.getContext());
             textView.setText("No JSON returned");
             contentLayout.addView(textView);
@@ -98,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
             List<Entry> entires = page.getEntries();
             Map<Long, User> users = page.getUsers();
 
-            LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
             contentLayout.removeAllViews();
             if (entires.size() > 0) {
                 NavigationWidget navigationWidget = new NavigationWidget(contentLayout.getContext());
