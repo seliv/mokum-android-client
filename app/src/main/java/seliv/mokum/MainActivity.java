@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -142,6 +143,15 @@ public class MainActivity extends AppCompatActivity {
             if (entires.size() > 0) {
                 NavigationWidget navigationWidget = new NavigationWidget(contentLayout.getContext());
                 navigationWidget.setUrls(page.getOlderEntriesUrl(), page.getNewerEntriesUrl());
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.menu_main, navigationWidget.getMenu().getMenu());
+                updateHistoryMenuItem(navigationWidget.getMenu().getMenu());
+                navigationWidget.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        return handleMenuItem(item);
+                    }
+                });
                 contentLayout.addView(navigationWidget);
                 for (Entry entry : entires) {
                     EntryWidget entryWidget = new EntryWidget(contentLayout.getContext());
@@ -168,16 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        updateHistoryMenuItem(menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private boolean handleMenuItem(MenuItem item) {
         if (item.getItemId() >= HISTORY_MENU_BASE_ID) {
             int i = item.getItemId() - HISTORY_MENU_BASE_ID;
             if ((i >= 0) && (i < visitedUrls.size() - 1)) {
@@ -208,12 +209,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        updateHistoryMenuItem(menu);
-        return true;
     }
 
     private static final int HISTORY_MENU_BASE_ID = 1000;

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import seliv.mokum.MainActivity;
@@ -15,11 +16,13 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
     private Button olderButton;
     private Button newerButton;
     private Button postButton;
+    private Button menuButton;
 
     private PostWidget postWidget;
 
     private String olderUrl;
     private String newerUrl;
+    private PopupMenu menu;
 
     public NavigationWidget(Context context) {
         super(context);
@@ -42,6 +45,10 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
         }
     }
 
+    public PopupMenu getMenu() {
+        return menu;
+    }
+
     private void initChildren(Context context) {
         setOrientation(LinearLayout.VERTICAL);
 
@@ -53,7 +60,7 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0f);
         olderButton = new Button(context);
-        olderButton.setText("Older entries");
+        olderButton.setText("Older");
         olderButton.setLayoutParams(params);
 
         postButton = new Button(context);
@@ -61,8 +68,12 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
         postButton.setLayoutParams(params);
 
         newerButton = new Button(context);
-        newerButton.setText("Newer entries");
+        newerButton.setText("Newer");
         newerButton.setLayoutParams(params);
+
+        menuButton = new Button(context);
+        menuButton.setText("...");
+        menuButton.setLayoutParams(params);
 
         TextView viewLO = new TextView(context);
         viewLO.setLayoutParams(outerStrutParams);
@@ -80,6 +91,7 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
         navHolder.addView(viewRI);
         navHolder.addView(newerButton);
         navHolder.addView(viewRO);
+        navHolder.addView(menuButton);
 
         postWidget = new PostWidget(context);
         postWidget.setVisibility(View.GONE);
@@ -112,6 +124,14 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
             }
         });
         postWidget.setListener(this);
+
+        menu = new PopupMenu(context, menuButton);
+        menuButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.show();
+            }
+        });
     }
 
     @Override
