@@ -46,7 +46,7 @@ import seliv.mokum.api.model.User;
 /**
  * Created by aselivanov on 2/5/2016.
  */
-public class EntryWidget extends LinearLayout {
+public class EntryWidget extends RelativeLayout {
     private TextView userText;
     private TextView entryText;
     private TextView timeText;
@@ -64,11 +64,9 @@ public class EntryWidget extends LinearLayout {
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(getPxSize(16), 0, getPxSize(16), 0);
         setLayoutParams(params);
-        setOrientation(LinearLayout.VERTICAL);
         initChildren(context);
     }
 
-/*
     private void initChildren(Context context) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams paramsFillHorizontal = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -154,105 +152,6 @@ public class EntryWidget extends LinearLayout {
         addView(avatarContainer);
         addView(postAndComments);
     }
-*/
-
-    private void initChildren(Context context) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams paramsFillHorizontal = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        userText = new TextView(context);
-        userText.setLayoutParams(paramsFillHorizontal);
-        userText.setTypeface(userText.getTypeface(), 1); // 1 = bold
-        userText.setTextSize(24.0f);
-        entryText = new TextView(context);
-        entryText.setLayoutParams(paramsFillHorizontal);
-        entryText.setTextSize(20.0f);
-        timeText = new TextView(context);
-        timeText.setLayoutParams(params);
-        timeText.setTextSize(18.0f);
-        actionsText = new TextView(context);
-        actionsText.setLayoutParams(params);
-        actionsText.setTextSize(20.0f);
-        actionsProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleSmall);
-        actionsProgressBar.setLayoutParams(params);
-        actionsProgressBar.setVisibility(View.GONE);
-        likesIcon = new TextView(context);
-        likesIcon.setLayoutParams(params);
-        likesIcon.setTextSize(18.0f);
-        likesText = new TextView(context);
-        likesText.setLayoutParams(params);
-        likesText.setTextSize(18.0f);
-        likesProgressBar = new ProgressBar(context, null, android.R.attr.progressBarStyleSmall);
-        likesProgressBar.setLayoutParams(params);
-        likesProgressBar.setVisibility(View.GONE);
-
-        int pxSize = getPxSize(50);
-        LinearLayout avatarContainer = new LinearLayout(context);
-        avatarContainer.setLayoutParams(params);
-        avatarContainer.setPadding(0, getPxSize(7), getPxSize(4), 0);
-        avatar = new ImageView(context);
-        avatar.setLayoutParams(params);
-        avatar.setMaxWidth(pxSize);
-        avatar.setMaxHeight(pxSize);
-        avatar.setMinimumWidth(pxSize);
-        avatar.setMinimumHeight(pxSize);
-        avatar.setPadding(1, 1, 1, 1);
-        avatar.setBackgroundColor(Color.rgb(193, 193, 193));
-        avatarContainer.addView(avatar);
-
-        attachmentsView = new LinearLayout(context);
-        attachmentsView.setOrientation(LinearLayout.HORIZONTAL);
-        HorizontalScrollView attachmentsScroll = new HorizontalScrollView(context);
-        attachmentsScroll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        attachmentsScroll.setHorizontalFadingEdgeEnabled(true);
-        attachmentsScroll.setFadingEdgeLength(getPxSize(16));
-        attachmentsScroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        attachmentsScroll.addView(attachmentsView);
-
-        LinearLayout likesAndProgress = new LinearLayout(context);
-        likesAndProgress.setLayoutParams(params);
-        likesAndProgress.setOrientation(LinearLayout.HORIZONTAL);
-        likesAndProgress.addView(likesIcon);
-        likesAndProgress.addView(likesProgressBar);
-        likesAndProgress.addView(likesText);
-
-        commentsView = new LinearLayout(context);
-        commentsView.setOrientation(LinearLayout.VERTICAL);
-
-        LinearLayout usernameAndTime = new LinearLayout(context);
-        usernameAndTime.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        usernameAndTime.setOrientation(LinearLayout.VERTICAL);
-        usernameAndTime.addView(userText);
-        usernameAndTime.addView(timeText);
-
-        LinearLayout.LayoutParams paramsWithMargin = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        paramsWithMargin.setMargins(0, 0, 0, getPxSize(8));
-        LinearLayout postHeader = new LinearLayout(context);
-        postHeader.setLayoutParams(paramsWithMargin);
-        postHeader.setOrientation(LinearLayout.HORIZONTAL);
-        postHeader.addView(avatarContainer);
-        postHeader.addView(usernameAndTime);
-
-        LinearLayout.LayoutParams actionsParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        actionsParams.setMargins(getPxSize(26), getPxSize(6), 0, getPxSize(8));
-        LinearLayout actions = new LinearLayout(context);
-        actions.setLayoutParams(actionsParams);
-        actions.setOrientation(LinearLayout.HORIZONTAL);
-        actions.addView(actionsProgressBar);
-        actions.addView(actionsText);
-
-        addView(postHeader);
-        addView(entryText);
-        addView(attachmentsScroll);
-        addView(actions);
-        addView(likesAndProgress);
-        addView(commentsView);
-
-        View separator = new View(context);
-        separator.setBackgroundColor(0xFFF0F0F0);
-        LinearLayout.LayoutParams separatorParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getPxSize(1));
-        separatorParams.setMargins(0, getPxSize(16), 0, getPxSize(16));
-        addView(separator, separatorParams);
-    }
 
     private int getPxSize(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, dp, getResources().getDisplayMetrics());
@@ -273,15 +172,15 @@ public class EntryWidget extends LinearLayout {
         };
         userNameBuilder.setSpan(clickable, 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userText.setText(userNameBuilder);
         userText.setMovementMethod(LinkMovementMethod.getInstance());
         userText.setHighlightColor(Color.TRANSPARENT);
         userText.setClickable(true);
 
         SpannableStringBuilder entryBuilder = new SpannableStringBuilder(Html.fromHtml(entry.getText()));
-//        AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
-//        entryBuilder.setSpan(span, 0, entryBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
+        entryBuilder.setSpan(span, 0, entryBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         entryText.setText(entryBuilder);
         entryText.setMovementMethod(LinkMovementMethod.getInstance());
         entryText.setHighlightColor(Color.TRANSPARENT);
@@ -470,8 +369,7 @@ public class EntryWidget extends LinearLayout {
                 TextView iconView = new TextView(getContext());
                 iconView.setLayoutParams(params);
                 iconView.setText("\uD83D\uDCAC ");
-//                iconView.setTextSize(12.0f);
-                iconView.setTextSize(18.0f);
+                iconView.setTextSize(12.0f);
 
                 SpannableStringBuilder commentBuilder = new SpannableStringBuilder();
                 commentBuilder.append(Html.fromHtml(comment.getText())).append(" - ");
@@ -494,8 +392,7 @@ public class EntryWidget extends LinearLayout {
                 commentView.setText(commentBuilder);
 //                Spanned spannedText = Html.fromHtml(comment.getText() + " - <font color=#555599>" + users.get(comment.getUserId()).getDisplayName() + "</font>");
 //                commentView.setText(spannedText);
-//                commentView.setTextSize(12.0f);
-                commentView.setTextSize(18.0f);
+                commentView.setTextSize(12.0f);
                 commentView.setMovementMethod(LinkMovementMethod.getInstance());
                 commentView.setHighlightColor(Color.TRANSPARENT);
                 commentView.setLinkTextColor(0xFF555599);
@@ -515,17 +412,14 @@ public class EntryWidget extends LinearLayout {
 
                     TextView emptyIconView = new TextView(getContext());
                     emptyIconView.setLayoutParams(params);
-//                    emptyIconView.setText("     ");
-//                    emptyIconView.setTextSize(12.0f);
-                    emptyIconView.setText("       ");
-                    emptyIconView.setTextSize(18.0f);
+                    emptyIconView.setText("     ");
+                    emptyIconView.setTextSize(12.0f);
 
                     TextView moreView = new TextView(getContext());
                     moreView.setLayoutParams(params);
                     moreView.setTypeface(userText.getTypeface(), Typeface.ITALIC);
                     moreView.setText(Html.fromHtml("<font color=#555599>" + (commentsCount - comments.size()) + " more comments</font>"));
-//                    moreView.setTextSize(12.0f);
-                    moreView.setTextSize(18.0f);
+                    moreView.setTextSize(12.0f);
 
                     if (entryUrl != null) {
                         final String url = entryUrl;
@@ -563,25 +457,25 @@ public class EntryWidget extends LinearLayout {
         activity.goToUrl(url);
     }
 
-//    private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
-//        @Override
-//        public int getLeadingMarginLineCount() {
-//            return 3;
-//        }
-//
-//        @Override
-//        public int getLeadingMargin(boolean first) {
-//            if (first) {
-//                return getPxSize(54);
-//            } else {
-//                return 0;
-//            }
-//        }
-//
-//        @Override
-//        public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
-//        }
-//    }
+    private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
+        @Override
+        public int getLeadingMarginLineCount() {
+            return 3;
+        }
+
+        @Override
+        public int getLeadingMargin(boolean first) {
+            if (first) {
+                return getPxSize(54);
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public void drawLeadingMargin(Canvas c, Paint p, int x, int dir, int top, int baseline, int bottom, CharSequence text, int start, int end, boolean first, Layout layout) {
+        }
+    }
 
     private static class AvatarLoader extends AsyncTask<String, Void, Bitmap> {
         private final ImageView target;
