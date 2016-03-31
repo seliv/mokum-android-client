@@ -223,7 +223,7 @@ public class EntryWidget extends RelativeLayout {
         this.liked = liked;
         this.entryId = entryId;
 
-        SpannableStringBuilder actionsBuilder = new SpannableStringBuilder();
+        SpannableStringBuilder actionsBuilder = new SpannableStringBuilder(" - ");
         if (canComment) {
             int start = actionsBuilder.length();
             actionsBuilder.append("Comment");
