@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import seliv.mokum.MainActivity;
+import seliv.mokum.R;
 import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Attachment;
 import seliv.mokum.api.model.Comment;
@@ -68,89 +69,18 @@ public class EntryWidget extends RelativeLayout {
     }
 
     private void initChildren(Context context) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams paramsFillHorizontal = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        userText = new TextView(context);
-        userText.setLayoutParams(paramsFillHorizontal);
-        userText.setTypeface(userText.getTypeface(), 1); // 1 = bold
-        entryText = new TextView(context);
-        entryText.setLayoutParams(paramsFillHorizontal);
-        entryText.setMinLines(3);
-        timeText = new TextView(context);
-        timeText.setLayoutParams(params);
-        timeText.setTextSize(11.0f);
-        actionsText = new TextView(context);
-        actionsText.setLayoutParams(params);
-        actionsText.setTextSize(11.0f);
-        actionsProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleSmall);
-        actionsProgressBar.setLayoutParams(params);
-        actionsProgressBar.setVisibility(View.GONE);
-        likesIcon = new TextView(context);
-        likesIcon.setLayoutParams(params);
-        likesIcon.setTextSize(11.0f);
-        likesText = new TextView(context);
-        likesText.setLayoutParams(params);
-        likesText.setTextSize(11.0f);
-        likesProgressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleSmall);
-        likesProgressBar.setLayoutParams(params);
-        likesProgressBar.setVisibility(View.GONE);
-
-        int pxSize = getPxSize(50);
-        LinearLayout avatarContainer = new LinearLayout(context);
-        avatarContainer.setLayoutParams(params);
-        avatarContainer.setPadding(0, getPxSize(7), getPxSize(4), 0);
-        avatar = new ImageView(context);
-        avatar.setLayoutParams(params);
-        avatar.setMaxWidth(pxSize);
-        avatar.setMaxHeight(pxSize);
-        avatar.setMinimumWidth(pxSize);
-        avatar.setMinimumHeight(pxSize);
-        avatar.setPadding(1, 1, 1, 1);
-        avatar.setBackgroundColor(Color.rgb(193, 193, 193));
-        avatarContainer.addView(avatar);
-
-        LinearLayout.LayoutParams paramsWithMargin = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        paramsWithMargin.setMargins(0, 0, 0, getPxSize(8));
-        LinearLayout postAndComments = new LinearLayout(getContext());
-        postAndComments.setLayoutParams(paramsWithMargin);
-        postAndComments.setOrientation(LinearLayout.VERTICAL);
-        postAndComments.addView(userText);
-        postAndComments.addView(entryText);
-
-        attachmentsView = new LinearLayout(postAndComments.getContext());
-        attachmentsView.setOrientation(LinearLayout.HORIZONTAL);
-        HorizontalScrollView attachmentsScroll = new HorizontalScrollView(postAndComments.getContext());
-        attachmentsScroll.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        attachmentsScroll.setHorizontalFadingEdgeEnabled(true);
-        attachmentsScroll.setFadingEdgeLength(getPxSize(16));
-        attachmentsScroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        attachmentsScroll.addView(attachmentsView);
-        postAndComments.addView(attachmentsScroll);
-
-        LinearLayout timeAndActions = new LinearLayout(getContext());
-        timeAndActions.setLayoutParams(params);
-        timeAndActions.setOrientation(LinearLayout.HORIZONTAL);
-        timeAndActions.addView(timeText);
-        timeAndActions.addView(actionsProgressBar);
-        timeAndActions.addView(actionsText);
-
-        postAndComments.addView(timeAndActions);
-
-        LinearLayout likesAndProgress = new LinearLayout(getContext());
-        likesAndProgress.setLayoutParams(params);
-        likesAndProgress.setOrientation(LinearLayout.HORIZONTAL);
-        likesAndProgress.addView(likesIcon);
-        likesAndProgress.addView(likesProgressBar);
-        likesAndProgress.addView(likesText);
-
-        postAndComments.addView(likesAndProgress);
-
-        commentsView = new LinearLayout(postAndComments.getContext());
-        commentsView.setOrientation(LinearLayout.VERTICAL);
-        postAndComments.addView(commentsView);
-
-        addView(avatarContainer);
-        addView(postAndComments);
+        inflate(context, R.layout.layout_entry, this);
+        userText = (TextView) findViewById(R.id.userTextView);
+        entryText = (TextView) findViewById(R.id.entryTextView);
+        timeText = (TextView) findViewById(R.id.timeTextView);
+        actionsText = (TextView) findViewById(R.id.actionsText);
+        actionsProgressBar = (ProgressBar) findViewById(R.id.actionsProgressBar);
+        likesIcon = (TextView) findViewById(R.id.likesIconTextView);
+        likesText = (TextView) findViewById(R.id.likesTextView);
+        likesProgressBar = (ProgressBar) findViewById(R.id.likesProgressBar);
+        avatar = (ImageView) findViewById(R.id.avatarImageView);
+        attachmentsView = (LinearLayout) findViewById(R.id.attachmentsView);
+        commentsView = (LinearLayout) findViewById(R.id.commentsLayout);
     }
 
     private int getPxSize(int dp) {
