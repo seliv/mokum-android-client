@@ -12,11 +12,13 @@ import android.text.Html;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
+import android.text.style.URLSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -99,6 +101,12 @@ public class EntryWidget extends RelativeLayout {
                 System.out.println("userUrl = " + userUrl);
                 goToUrl(userUrl);
             }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
         };
         userNameBuilder.setSpan(clickable, 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -109,6 +117,7 @@ public class EntryWidget extends RelativeLayout {
         userText.setClickable(true);
 
         SpannableStringBuilder entryBuilder = new SpannableStringBuilder(Html.fromHtml(entry.getText()));
+        replaceUnderlinedUrl(entryBuilder);
         AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
         entryBuilder.setSpan(span, 0, entryBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         entryText.setText(entryBuilder);
@@ -166,6 +175,12 @@ public class EntryWidget extends RelativeLayout {
                         commentsView.addView(commentWidget);
                     }
                 }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
             };
             actionsBuilder.setSpan(clickable, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             actionsBuilder.setSpan(new ForegroundColorSpan(0xFF555599), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -186,6 +201,12 @@ public class EntryWidget extends RelativeLayout {
             public void onClick(View view) {
                 actionsProgressBar.setVisibility(View.VISIBLE);
                 new LikeSender(EntryWidget.this, entryId, !liked).execute();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
             }
         };
         actionsBuilder.setSpan(clickable, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -219,6 +240,12 @@ public class EntryWidget extends RelativeLayout {
                         System.out.println("userUrl = " + userUrl);
                         goToUrl(userUrl);
                     }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
                 };
                 likesBuilder.setSpan(clickable, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 likesBuilder.setSpan(new ForegroundColorSpan(0xFF555599), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -237,6 +264,12 @@ public class EntryWidget extends RelativeLayout {
                         likesIcon.setVisibility(View.GONE);
                         likesProgressBar.setVisibility(View.VISIBLE);
                         new LikesLoader(EntryWidget.this).execute(likesUrl);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
                     }
                 };
                 likesBuilder.setSpan(clickable, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -295,7 +328,7 @@ public class EntryWidget extends RelativeLayout {
             commentsView.removeAllViews();
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             LinearLayout.LayoutParams paramsWithMargin = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-            paramsWithMargin.setMargins(0, 0, 0, getPxSize(7));
+            paramsWithMargin.setMargins(0, 0, 0, getPxSize(6));
             for (int i = 0; i < comments.size(); i++) {
                 Comment comment = comments.get(i);
                 TextView iconView = new TextView(getContext());
@@ -305,6 +338,7 @@ public class EntryWidget extends RelativeLayout {
 
                 SpannableStringBuilder commentBuilder = new SpannableStringBuilder();
                 commentBuilder.append(Html.fromHtml(comment.getText())).append(" - ");
+                replaceUnderlinedUrl(commentBuilder);
                 int start = commentBuilder.length();
                 commentBuilder.append(users.get(comment.getUserId()).getDisplayName());
                 int end = commentBuilder.length();
@@ -313,6 +347,12 @@ public class EntryWidget extends RelativeLayout {
                     public void onClick(View view) {
                         System.out.println("userUrl = " + userUrl);
                         goToUrl(userUrl);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
                     }
                 };
                 commentBuilder.setSpan(clickable, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -325,7 +365,7 @@ public class EntryWidget extends RelativeLayout {
 //                Spanned spannedText = Html.fromHtml(comment.getText() + " - <font color=#555599>" + users.get(comment.getUserId()).getDisplayName() + "</font>");
 //                commentView.setText(spannedText);
                 commentView.setTextSize(13.0f);
-                commentView.setLineSpacing(3f, 1.0f);
+                commentView.setLineSpacing(1f, 1.0f);
                 commentView.setMovementMethod(LinkMovementMethod.getInstance());
                 commentView.setHighlightColor(Color.TRANSPARENT);
                 commentView.setLinkTextColor(0xFF555599);
@@ -354,7 +394,7 @@ public class EntryWidget extends RelativeLayout {
                     moreView.setTypeface(userText.getTypeface(), Typeface.ITALIC);
                     moreView.setText(Html.fromHtml("<font color=#555599>" + (commentsCount - comments.size()) + " more comments</font>"));
                     moreView.setTextSize(13.0f);
-                    moreView.setLineSpacing(3f, 1.0f);
+                    moreView.setLineSpacing(1f, 1.0f);
 
                     if (entryUrl != null) {
                         final String url = entryUrl;
@@ -392,6 +432,22 @@ public class EntryWidget extends RelativeLayout {
         activity.goToUrl(url);
     }
 
+    private static void replaceUnderlinedUrl(SpannableStringBuilder spannableStringBuilder) {
+        URLSpan[] spans = spannableStringBuilder.getSpans(0, spannableStringBuilder.length(), URLSpan.class);
+        for (URLSpan span: spans) {
+            int start = spannableStringBuilder.getSpanStart(span);
+            int end = spannableStringBuilder.getSpanEnd(span);
+            spannableStringBuilder.removeSpan(span);
+            URLSpan newSpan = new URLSpan(span.getURL()) {
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            spannableStringBuilder.setSpan(newSpan, start, end, 0);
+        }
+    }
     private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
         @Override
         public int getLeadingMarginLineCount() {
