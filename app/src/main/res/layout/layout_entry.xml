@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
     android:id="@+id/entryWidgetLayout">
 
     <LinearLayout
@@ -44,14 +44,20 @@
             android:layout_height="wrap_content"
             android:text="username"
             android:id="@+id/userTextView"
-            android:textStyle="bold" />
+            android:lineSpacingExtra="4sp"
+            android:textStyle="bold"
+            android:textSize="15sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="postContent"
             android:id="@+id/entryTextView"
-            android:minLines="3" />
+            android:minLines="2"
+            android:lineSpacingExtra="4sp"
+            android:textSize="15sp"
+            android:linksClickable="false"
+            android:textColor="@color/colorPostText" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -73,14 +79,20 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="8sp"
+            android:layout_marginBottom="8sp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
+                android:text="10 hours ago"
                 android:id="@+id/timeTextView"
-                android:textSize="11sp" />
+                android:lineSpacingExtra="3sp"
+                android:textSize="13sp"
+                android:textColor="@color/colorCommentText" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleSmall"
@@ -92,8 +104,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/actionsText" />
+                android:text="Comment - Like - Hide"
+                android:id="@+id/actionsText"
+                android:lineSpacingExtra="1sp"
+                android:textSize="15sp"
+                android:textColor="@color/colorCommentText" />
 
         </LinearLayout>
 
@@ -103,14 +118,19 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="8sp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
+                android:text=":-)"
                 android:id="@+id/likesIconTextView"
-                android:textSize="11sp" />
+                android:textSize="13sp"
+                android:textColor="@color/colorCommentText" />
 
             <ProgressBar
                 style="?android:attr/progressBarStyleSmall"
@@ -122,9 +142,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Text"
+                android:text="user1, user2, user3 and 10 more"
                 android:id="@+id/likesTextView"
-                android:textSize="11sp" />
+                android:textSize="13sp"
+                android:textColor="@color/colorCommentText" />
         </LinearLayout>
 
         <LinearLayout
@@ -132,6 +153,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/commentsLayout"></LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorSeparator"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="8sp"
+            android:layout_marginBottom="8sp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp" />
     </LinearLayout>
 
 </RelativeLayout>

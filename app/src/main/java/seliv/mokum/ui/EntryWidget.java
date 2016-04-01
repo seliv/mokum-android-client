@@ -294,12 +294,14 @@ public class EntryWidget extends RelativeLayout {
             commentsView.setVisibility(View.VISIBLE);
             commentsView.removeAllViews();
             LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams paramsWithMargin = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            paramsWithMargin.setMargins(0, 0, 0, getPxSize(7));
             for (int i = 0; i < comments.size(); i++) {
                 Comment comment = comments.get(i);
                 TextView iconView = new TextView(getContext());
                 iconView.setLayoutParams(params);
                 iconView.setText("\uD83D\uDCAC ");
-                iconView.setTextSize(12.0f);
+                iconView.setTextSize(13.0f);
 
                 SpannableStringBuilder commentBuilder = new SpannableStringBuilder();
                 commentBuilder.append(Html.fromHtml(comment.getText())).append(" - ");
@@ -322,10 +324,12 @@ public class EntryWidget extends RelativeLayout {
                 commentView.setText(commentBuilder);
 //                Spanned spannedText = Html.fromHtml(comment.getText() + " - <font color=#555599>" + users.get(comment.getUserId()).getDisplayName() + "</font>");
 //                commentView.setText(spannedText);
-                commentView.setTextSize(12.0f);
+                commentView.setTextSize(13.0f);
+                commentView.setLineSpacing(3f, 1.0f);
                 commentView.setMovementMethod(LinkMovementMethod.getInstance());
                 commentView.setHighlightColor(Color.TRANSPARENT);
                 commentView.setLinkTextColor(0xFF555599);
+                commentView.setTextColor(getResources().getColor(R.color.colorCommentText));
                 commentView.setClickable(true);
 
                 LinearLayout singleCommentView = new LinearLayout(getContext());
@@ -333,7 +337,7 @@ public class EntryWidget extends RelativeLayout {
                 singleCommentView.addView(iconView);
                 singleCommentView.addView(commentView);
 
-                commentsView.addView(singleCommentView);
+                commentsView.addView(singleCommentView, paramsWithMargin);
 
                 if ((i == 0) && commentsCount > comments.size()) {
                     final ProgressBar progressBar = new ProgressBar(getContext(), null, android.R.attr.progressBarStyleSmall);
@@ -343,13 +347,14 @@ public class EntryWidget extends RelativeLayout {
                     TextView emptyIconView = new TextView(getContext());
                     emptyIconView.setLayoutParams(params);
                     emptyIconView.setText("     ");
-                    emptyIconView.setTextSize(12.0f);
+                    emptyIconView.setTextSize(13.0f);
 
                     TextView moreView = new TextView(getContext());
                     moreView.setLayoutParams(params);
                     moreView.setTypeface(userText.getTypeface(), Typeface.ITALIC);
                     moreView.setText(Html.fromHtml("<font color=#555599>" + (commentsCount - comments.size()) + " more comments</font>"));
-                    moreView.setTextSize(12.0f);
+                    moreView.setTextSize(13.0f);
+                    moreView.setLineSpacing(3f, 1.0f);
 
                     if (entryUrl != null) {
                         final String url = entryUrl;
@@ -369,7 +374,7 @@ public class EntryWidget extends RelativeLayout {
                     moreCommentView.addView(emptyIconView);
                     moreCommentView.addView(progressBar);
                     moreCommentView.addView(moreView);
-                    commentsView.addView(moreCommentView);
+                    commentsView.addView(moreCommentView, paramsWithMargin);
                 }
             }
         } else {
@@ -390,13 +395,13 @@ public class EntryWidget extends RelativeLayout {
     private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
         @Override
         public int getLeadingMarginLineCount() {
-            return 3;
+            return 2;
         }
 
         @Override
         public int getLeadingMargin(boolean first) {
             if (first) {
-                return getPxSize(54);
+                return getPxSize(54 + 8);
             } else {
                 return 0;
             }
