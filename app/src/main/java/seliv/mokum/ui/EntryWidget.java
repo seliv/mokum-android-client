@@ -527,20 +527,49 @@ public class EntryWidget extends RelativeLayout {
         activity.goToUrl(url);
     }
 
-    private static void replaceUnderlinedUrl(SpannableStringBuilder spannableStringBuilder) {
+    private void replaceUnderlinedUrl(SpannableStringBuilder spannableStringBuilder) {
         URLSpan[] spans = spannableStringBuilder.getSpans(0, spannableStringBuilder.length(), URLSpan.class);
         for (URLSpan span: spans) {
             int start = spannableStringBuilder.getSpanStart(span);
             int end = spannableStringBuilder.getSpanEnd(span);
             spannableStringBuilder.removeSpan(span);
-            URLSpan newSpan = new URLSpan(span.getURL()) {
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
+            String url = span.getURL();
+            if (url.startsWith("/")) {
+                // Mokum internal URL - handling internally
+                if (!url.contains(".json")) {
+                    if (url.contains("?")) {
+                        url = url.replace("?", ".json?");
+                    } else {
+                        while (url.endsWith("/")) {
+                            url = url.substring(0, url.length() - 1);
+                        }
+                        url = url + ".json";
+                    }
                 }
-            };
-            spannableStringBuilder.setSpan(newSpan, start, end, 0);
+                final String jsonUrl = url;
+                ClickableSpan clickable = new ClickableSpan() {
+                    public void onClick(View view) {
+                        System.out.println("Inline url = " + jsonUrl);
+                        goToUrl(jsonUrl);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+                spannableStringBuilder.setSpan(clickable, start, end, 0);
+            } else {
+                URLSpan newSpan = new URLSpan(url) {
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+                spannableStringBuilder.setSpan(newSpan, start, end, 0);
+            }
         }
     }
     private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
