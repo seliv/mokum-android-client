@@ -9,6 +9,7 @@ import java.util.Map;
 public class Page {
     List<Entry> entries;
     private Map<Long, User> users;
+    private Map<Long, Group> groups;
     private String older_entries_url;
     private String newer_entries_url;
 
@@ -31,6 +32,10 @@ public class Page {
 
     public Map<Long, User> getUsers() {
         return users;
+    }
+
+    public Map<Long, Group> getGroups() {
+        return groups;
     }
 
     public String getOlderEntriesUrl() {

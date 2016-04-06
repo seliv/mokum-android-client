@@ -62,6 +62,10 @@ public class Entry {
         return published_at;
     }
 
+    public Reason getReason() {
+        return reason;
+    }
+
     public List<Long> getLikes() {
         return likes;
     }

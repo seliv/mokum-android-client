@@ -37,6 +37,10 @@ public class User {
         return display_name;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public String getAvatarUrl() {
         return avatar_url;
     }

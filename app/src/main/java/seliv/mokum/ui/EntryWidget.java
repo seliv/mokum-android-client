@@ -44,6 +44,7 @@ import seliv.mokum.api.model.Comments;
 import seliv.mokum.api.model.Entry;
 import seliv.mokum.api.model.LikeResult;
 import seliv.mokum.api.model.Likes;
+import seliv.mokum.api.model.Reason;
 import seliv.mokum.api.model.User;
 
 /**
@@ -94,6 +95,10 @@ public class EntryWidget extends RelativeLayout {
         User user = users.get(userId);
 
         SpannableStringBuilder userNameBuilder = new SpannableStringBuilder();
+        if (isEntryPrivate(entry, users)) {
+            userNameBuilder.append(Html.fromHtml("&#x1f512; "));
+        }
+        int userNameStartPos = userNameBuilder.length();
         userNameBuilder.append(user.getDisplayName());
         final String userUrl = users.get(userId).getName() + ".json";
         ClickableSpan clickable = new ClickableSpan() {
@@ -108,8 +113,9 @@ public class EntryWidget extends RelativeLayout {
                 ds.setUnderlineText(false);
             }
         };
-        userNameBuilder.setSpan(clickable, 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        userNameBuilder.setSpan(clickable, userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        constructReasonDescription(userNameBuilder, entry.getReason(), users);
         userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userText.setText(userNameBuilder);
         userText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -419,6 +425,92 @@ public class EntryWidget extends RelativeLayout {
             }
         } else {
             commentsView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private boolean isEntryPrivate(Entry entry, Map<Long, User> users) {
+        if (entry.getReason().getUserPrivate() != null) {
+            return true;
+        }
+        User user = users.get(entry.getUserId());
+        if ("private".equalsIgnoreCase(user.getStatus())) {
+            return true;
+        }
+        return false;
+    }
+
+    private void constructReasonDescription(SpannableStringBuilder builder, Reason reason, Map<Long, User> users) {
+        String andSuffix = "";
+        boolean hasReason = false;
+        int resonStartPos = builder.length();
+        if (reason.getUserLikes() != null) {
+            hasReason = true;
+            builder.append("liked by ");
+            andSuffix = ", ";
+            String suffixLocal = "";
+            for (Long userId : reason.getUserLikes()) {
+                User user = users.get(userId);
+                // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
+                int startPos = builder.length();
+                builder.append(suffixLocal);
+                builder.append(user.getDisplayName());
+                final String userUrl = user.getName() + ".json";
+                ClickableSpan clickable = new ClickableSpan() {
+                    public void onClick(View view) {
+                        System.out.println("userUrl = " + userUrl);
+                        goToUrl(userUrl);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+                builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.setSpan(new ForegroundColorSpan(0xFF555599), startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                suffixLocal = ", ";
+            }
+        }
+        if (reason.getUserComments() != null) {
+            hasReason = true;
+            builder.append(andSuffix);
+            builder.append("commented by ");
+            andSuffix = ", ";
+            String suffixLocal = "";
+            for (Long userId : reason.getUserComments()) {
+                User user = users.get(userId);
+                // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
+                int startPos = builder.length();
+                builder.append(suffixLocal);
+                builder.append(user.getDisplayName());
+                final String userUrl = user.getName() + ".json";
+                ClickableSpan clickable = new ClickableSpan() {
+                    public void onClick(View view) {
+                        System.out.println("userUrl = " + userUrl);
+                        goToUrl(userUrl);
+                    }
+
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                    }
+                };
+                builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                builder.setSpan(new ForegroundColorSpan(0xFF555599), startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                suffixLocal = ", ";
+            }
+        }
+        if (reason.getUserPrivate() != null) {
+            hasReason = true;
+            builder.append("posted to private sub-feed");
+        }
+        if (hasReason) {
+            builder.insert(resonStartPos, " (");
+            builder.append(")");
         }
     }
 
