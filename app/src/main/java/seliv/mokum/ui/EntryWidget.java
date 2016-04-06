@@ -303,7 +303,17 @@ public class EntryWidget extends RelativeLayout {
             if (pxHeight > maxHeight * 2) {
                 pxHeight = maxHeight * 2; // Artificially limiting thumbnail size for extra-high DPI screens
             }
-            for (Attachment attachment : attachments) {
+
+            final String[] thumbUrls = new String[attachments.size()];
+            final String[] imageUrls = new String[attachments.size()];
+            for (int i = 0; i < attachments.size(); i++) {
+                Attachment attachment = attachments.get(i);
+                thumbUrls[i] = "https://mokum.place" + attachment.getThumbUrl();
+                imageUrls[i] = "https://mokum.place" + attachment.getMediumUrl();
+            }
+
+            for (int i = 0; i < attachments.size(); i++) {
+                Attachment attachment = attachments.get(i);
                 LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
                 ImageView imageView = new ImageView(getContext());
                 imageView.setLayoutParams(params);
@@ -321,6 +331,14 @@ public class EntryWidget extends RelativeLayout {
 
                 String url = "https://mokum.place" + attachment.getThumbUrl();
                 new AvatarLoader(imageView).execute(url);
+
+                final int index = i;
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ((MainActivity) v.getContext()).showImageGallery(thumbUrls, imageUrls, index);
+                    }
+                });
 
                 attachmentsView.addView(imageView);
             }

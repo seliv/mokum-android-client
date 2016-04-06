@@ -1,18 +1,32 @@
 package seliv.mokum;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+import com.veinhorn.scrollgalleryview.MediaInfo;
+import com.veinhorn.scrollgalleryview.ScrollGalleryView;
+import com.veinhorn.scrollgalleryview.loader.MediaLoader;
+
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -93,6 +107,61 @@ public class MainActivity extends AppCompatActivity {
         new ContentLoader().execute(url);
     }
 
+    public void showImageGallery(final String[] thumbUrls, final String[] imageUrls, int current) {
+        List<MediaInfo> infos = new ArrayList<>(imageUrls.length);
+        for (int i = 0; i < thumbUrls.length; i++) {
+            final int index = i;
+            MediaInfo info = MediaInfo.mediaLoader(new MediaLoader() {
+                @Override
+                public boolean isImage() {
+                    return true;
+                }
+
+                @Override
+                public void loadMedia(Context context, ImageView imageView, SuccessCallback callback) {
+                    Picasso.with(MainActivity.this).
+                            load(imageUrls[index]).
+                            into(imageView);
+                    callback.onSuccess();
+                }
+
+                @Override
+                public void loadThumbnail(Context context, ImageView thumbnailView, SuccessCallback callback) {
+                    Picasso.with(MainActivity.this).
+                            load(thumbUrls[index]).
+                            into(thumbnailView);
+                    callback.onSuccess();
+                }
+            });
+            infos.add(info);
+        }
+
+        ScrollGalleryView scrollGalleryView = (ScrollGalleryView) findViewById(R.id.galleryView);
+        try {
+            Field imageListField = scrollGalleryView.getClass().getDeclaredField("mListOfMedia");
+            imageListField.setAccessible(true);
+            List<MediaInfo> imageList = (List<MediaInfo>) imageListField.get(scrollGalleryView);
+            imageList.clear();
+
+            Field thumbnailsContainerField = scrollGalleryView.getClass().getDeclaredField("thumbnailsContainer");
+            thumbnailsContainerField.setAccessible(true);
+            LinearLayout thumbnailsContainer = (LinearLayout) thumbnailsContainerField.get(scrollGalleryView);
+            thumbnailsContainer.removeAllViews();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        scrollGalleryView
+                .setThumbnailSize(100)
+                .setZoom(true)
+                .setFragmentManager(getSupportFragmentManager())
+                .addMedia(infos);
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
+        contentLayout.setVisibility(View.INVISIBLE);
+        scrollGalleryView.setVisibility(View.VISIBLE);
+
+        scrollGalleryView.setCurrentItem(current);
+    }
+
     private class ContentLoader extends AsyncTask<String, Void, Page> {
         @Override
         protected void onPreExecute() {
@@ -168,6 +237,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        ScrollGalleryView scrollGalleryView = (ScrollGalleryView) findViewById(R.id.galleryView);
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.scrollContentLayout);
+        if (View.VISIBLE == scrollGalleryView.getVisibility()) {
+            contentLayout.setVisibility(View.VISIBLE);
+            scrollGalleryView.setVisibility(View.GONE);
+            return;
+        }
         if (!visitedUrls.isEmpty()) {
             visitedUrls.pop();
         }
@@ -227,4 +303,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private static class GalleryImageLoader extends AsyncTask<String, Void, Bitmap> {
+        private final ImageView target;
+        private final MediaLoader.SuccessCallback callback;
+
+        public GalleryImageLoader(ImageView target, MediaLoader.SuccessCallback callback) {
+            this.target = target;
+            this.callback = callback;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String url = params[0];
+            try {
+                InputStream is = new URL(url).openStream();
+                return BitmapFactory.decodeStream(is);
+            } catch (Exception e) {
+                Log.e(e.getMessage(), e.getMessage(), e);
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            target.setImageBitmap(bitmap);
+            callback.onSuccess();
+        }
+    }
+
 }

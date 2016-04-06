@@ -32,4 +32,12 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:indeterminate="false" />
+
+    <com.veinhorn.scrollgalleryview.ScrollGalleryView
+        android:id="@+id/galleryView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:visibility="gone" />
+
 </RelativeLayout>
