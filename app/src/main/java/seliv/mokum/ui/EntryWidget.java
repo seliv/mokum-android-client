@@ -118,7 +118,9 @@ public class EntryWidget extends RelativeLayout {
         constructReasonDescription(userNameBuilder, entry.getReason(), users);
 
         userNameBuilder.append("\n");
+        int entryStartPos = userNameBuilder.length();
         userNameBuilder.append(Html.fromHtml(entry.getText()));
+        userNameBuilder.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPostText)), entryStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         replaceUnderlinedUrl(userNameBuilder);
         userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
