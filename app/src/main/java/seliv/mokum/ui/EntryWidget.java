@@ -51,8 +51,7 @@ import seliv.mokum.api.model.User;
  * Created by aselivanov on 2/5/2016.
  */
 public class EntryWidget extends RelativeLayout {
-    private TextView userText;
-    private TextView entryText;
+    private TextView userAndEntryText;
     private TextView timeText;
     private TextView actionsText;
     private ProgressBar actionsProgressBar;
@@ -73,8 +72,7 @@ public class EntryWidget extends RelativeLayout {
 
     private void initChildren(Context context) {
         inflate(context, R.layout.layout_entry, this);
-        userText = (TextView) findViewById(R.id.userTextView);
-        entryText = (TextView) findViewById(R.id.entryTextView);
+        userAndEntryText = (TextView) findViewById(R.id.userAndEntryTextView);
         timeText = (TextView) findViewById(R.id.timeTextView);
         actionsText = (TextView) findViewById(R.id.actionsText);
         actionsProgressBar = (ProgressBar) findViewById(R.id.actionsProgressBar);
@@ -111,25 +109,24 @@ public class EntryWidget extends RelativeLayout {
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
+                Typeface tf = ds.getTypeface();
+                ds.setTypeface(Typeface.create(tf, Typeface.BOLD));
             }
         };
         userNameBuilder.setSpan(clickable, userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         constructReasonDescription(userNameBuilder, entry.getReason(), users);
-        userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        userText.setText(userNameBuilder);
-        userText.setMovementMethod(LinkMovementMethod.getInstance());
-        userText.setHighlightColor(Color.TRANSPARENT);
-        userText.setClickable(true);
 
-        SpannableStringBuilder entryBuilder = new SpannableStringBuilder(Html.fromHtml(entry.getText()));
-        replaceUnderlinedUrl(entryBuilder);
-        AvatarLeadingMarginSpan span = new AvatarLeadingMarginSpan();
-        entryBuilder.setSpan(span, 0, entryBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        entryText.setText(entryBuilder);
-        entryText.setMovementMethod(LinkMovementMethod.getInstance());
-        entryText.setHighlightColor(Color.TRANSPARENT);
-        entryText.setLinkTextColor(0xFF555599);
+        userNameBuilder.append("\n");
+        userNameBuilder.append(Html.fromHtml(entry.getText()));
+        replaceUnderlinedUrl(userNameBuilder);
+        userNameBuilder.setSpan(new AvatarLeadingMarginSpan(), 0, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        userAndEntryText.setText(userNameBuilder);
+        userAndEntryText.setMovementMethod(LinkMovementMethod.getInstance());
+        userAndEntryText.setHighlightColor(Color.TRANSPARENT);
+        userAndEntryText.setLinkTextColor(0xFF555599);
+        userAndEntryText.setClickable(true);
 
         timeText.setText(DateUtils.getRelativeTimeSpanString(entry.getPublishedAt().getTime()));
 
@@ -397,7 +394,7 @@ public class EntryWidget extends RelativeLayout {
 
                     TextView moreView = new TextView(getContext());
                     moreView.setLayoutParams(params);
-                    moreView.setTypeface(userText.getTypeface(), Typeface.ITALIC);
+                    moreView.setTypeface(moreView.getTypeface(), Typeface.ITALIC);
                     moreView.setText(Html.fromHtml("<font color=#555599>" + (commentsCount - comments.size()) + " more comments</font>"));
                     moreView.setTextSize(13.0f);
                     moreView.setLineSpacing(1f, 1.0f);
@@ -465,6 +462,8 @@ public class EntryWidget extends RelativeLayout {
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
+                        Typeface tf = ds.getTypeface();
+                        ds.setTypeface(Typeface.create(tf, Typeface.BOLD));
                     }
                 };
                 builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -496,6 +495,8 @@ public class EntryWidget extends RelativeLayout {
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
+                        Typeface tf = ds.getTypeface();
+                        ds.setTypeface(Typeface.create(tf, Typeface.BOLD));
                     }
                 };
                 builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -543,7 +544,7 @@ public class EntryWidget extends RelativeLayout {
     private class AvatarLeadingMarginSpan implements LeadingMarginSpan.LeadingMarginSpan2 {
         @Override
         public int getLeadingMarginLineCount() {
-            return 2;
+            return 3;
         }
 
         @Override
