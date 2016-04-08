@@ -63,8 +63,8 @@ public class Connection {
     private HttpURLConnection initUrlConnection(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
-        urlConnection.setReadTimeout(5000);
-        urlConnection.setConnectTimeout(5000);
+        urlConnection.setReadTimeout(10000);
+        urlConnection.setConnectTimeout(10000);
         urlConnection.setRequestProperty("X-API-Token", token);
         urlConnection.setRequestProperty("Accept", "application/json");
         urlConnection.setRequestProperty("Content-Type", "application/json");
