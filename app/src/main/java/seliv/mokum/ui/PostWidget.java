@@ -43,7 +43,6 @@ public class PostWidget extends LinearLayout {
         postEdit.setLayoutParams(paramsFill);
         postEdit.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         postEdit.setMaxLines(6);
-        postEdit.setText("Test post from Android.");
 
         TextView commentsDisabledLabel = new TextView(context);
         commentsDisabledLabel.setLayoutParams(params);

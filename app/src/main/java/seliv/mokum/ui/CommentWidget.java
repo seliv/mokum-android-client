@@ -43,7 +43,6 @@ public class CommentWidget extends LinearLayout {
         commentEdit.setLayoutParams(paramsFill);
         commentEdit.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         commentEdit.setMaxLines(6);
-        commentEdit.setText("Test comment from Android.");
 
 //        commentEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 //            @Override
