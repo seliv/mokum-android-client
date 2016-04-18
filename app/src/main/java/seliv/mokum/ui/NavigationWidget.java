@@ -45,6 +45,12 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
         }
     }
 
+    public void setNavigationOnly(boolean navigationOnly) {
+        int visibility = navigationOnly ? View.INVISIBLE : View.VISIBLE;
+        postButton.setVisibility(visibility);
+        menuButton.setVisibility(visibility);
+    }
+
     public PopupMenu getMenu() {
         return menu;
     }

@@ -227,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
                     entryWidget.setEntry(users, entry);
                     contentLayout.addView(entryWidget);
                 }
+                NavigationWidget bottomNavigationWidget = new NavigationWidget(contentLayout.getContext());
+                bottomNavigationWidget.setUrls(page.getOlderEntriesUrl(), page.getNewerEntriesUrl());
+                bottomNavigationWidget.setNavigationOnly(true);
+                contentLayout.addView(bottomNavigationWidget);
             } else {
                 TextView textView = new TextView(contentLayout.getContext());
                 textView.setText("This feed has no entries (can be a private feed)");
