@@ -10,6 +10,7 @@ public class Reason {
     private List<Long> user_comments;
     private List<Long> user_private;
     private List<Long> group;
+    private List<Long> user;
 
     public List<Long> getUserLikes() {
         return user_likes;
@@ -25,5 +26,9 @@ public class Reason {
 
     public List<Long> getGroup() {
         return group;
+    }
+
+    public List<Long> getUser() {
+        return user;
     }
 }

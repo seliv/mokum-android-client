@@ -1,5 +1,6 @@
 package seliv.mokum.api.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,11 @@ public class Page {
     }
 
     public Map<Long, Group> getGroups() {
-        return groups;
+        if (groups != null) {
+            return groups;
+        } else {
+            return Collections.emptyMap();
+        }
     }
 
     public String getOlderEntriesUrl() {

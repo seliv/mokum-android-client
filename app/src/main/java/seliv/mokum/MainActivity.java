@@ -33,6 +33,7 @@ import java.util.Stack;
 
 import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Entry;
+import seliv.mokum.api.model.Group;
 import seliv.mokum.api.model.Page;
 import seliv.mokum.api.model.User;
 import seliv.mokum.net.Connection;
@@ -207,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             List<Entry> entires = page.getEntries();
             Map<Long, User> users = page.getUsers();
+            Map<Long, Group> groups = page.getGroups();
 
             contentLayout.removeAllViews();
             if (entires.size() > 0) {
@@ -224,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 contentLayout.addView(navigationWidget);
                 for (Entry entry : entires) {
                     EntryWidget entryWidget = new EntryWidget(contentLayout.getContext());
-                    entryWidget.setEntry(users, entry);
+                    entryWidget.setEntry(users, groups, entry);
                     contentLayout.addView(entryWidget);
                 }
                 NavigationWidget bottomNavigationWidget = new NavigationWidget(contentLayout.getContext());

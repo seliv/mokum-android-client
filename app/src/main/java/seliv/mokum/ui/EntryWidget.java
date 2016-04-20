@@ -42,6 +42,7 @@ import seliv.mokum.api.model.Attachment;
 import seliv.mokum.api.model.Comment;
 import seliv.mokum.api.model.Comments;
 import seliv.mokum.api.model.Entry;
+import seliv.mokum.api.model.Group;
 import seliv.mokum.api.model.LikeResult;
 import seliv.mokum.api.model.Likes;
 import seliv.mokum.api.model.Reason;
@@ -88,7 +89,7 @@ public class EntryWidget extends RelativeLayout {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, dp, getResources().getDisplayMetrics());
     }
 
-    public void setEntry(Map<Long, User> users, Entry entry) {
+    public void setEntry(Map<Long, User> users, Map<Long, Group> groups, Entry entry) {
         long userId = entry.getUserId();
         User user = users.get(userId);
 
@@ -115,7 +116,7 @@ public class EntryWidget extends RelativeLayout {
         };
         userNameBuilder.setSpan(clickable, userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         userNameBuilder.setSpan(new ForegroundColorSpan(0xFF555599), userNameStartPos, userNameBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        constructReasonDescription(userNameBuilder, entry.getReason(), users);
+        constructReasonDescription(userNameBuilder, entry.getReason(), users, groups);
 
         userNameBuilder.append("\n");
         int entryStartPos = userNameBuilder.length();
@@ -457,12 +458,75 @@ public class EntryWidget extends RelativeLayout {
         return !entry.isPublic();
     }
 
-    private void constructReasonDescription(SpannableStringBuilder builder, Reason reason, Map<Long, User> users) {
+    private void constructReasonDescription(SpannableStringBuilder builder, Reason reason, Map<Long, User> users, Map<Long, Group> groups) {
         String andSuffix = "";
         boolean hasReason = false;
         int resonStartPos = builder.length();
+        if ((reason.getUser() != null) || (reason.getGroup() != null)) {
+            hasReason = true;
+            builder.append("posted to ");
+            andSuffix = ", ";
+            String suffixLocal = "";
+            if (reason.getUser() != null) {
+                for (Long userId : reason.getUser()) {
+                    User user = users.get(userId);
+                    // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
+                    int startPos = builder.length();
+                    builder.append(suffixLocal);
+                    builder.append(user.getDisplayName());
+                    final String userUrl = user.getName() + ".json";
+                    ClickableSpan clickable = new ClickableSpan() {
+                        public void onClick(View view) {
+                            System.out.println("userUrl = " + userUrl);
+                            goToUrl(userUrl);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            super.updateDrawState(ds);
+                            ds.setUnderlineText(false);
+                            Typeface tf = ds.getTypeface();
+                            ds.setTypeface(Typeface.create(tf, Typeface.BOLD));
+                        }
+                    };
+                    builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    builder.setSpan(new ForegroundColorSpan(0xFF555599), startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    suffixLocal = ", ";
+                }
+            }
+            if (reason.getGroup() != null) {
+                for (Long groupId : reason.getGroup()) {
+                    Group group = groups.get(groupId);
+                    // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
+                    int startPos = builder.length();
+                    builder.append(suffixLocal);
+                    builder.append(group.getDisplayName());
+                    final String groupUrl = group.getUrl() + ".json";
+                    ClickableSpan clickable = new ClickableSpan() {
+                        public void onClick(View view) {
+                            System.out.println("groupUrl = " + groupUrl);
+                            goToUrl(groupUrl);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            super.updateDrawState(ds);
+                            ds.setUnderlineText(false);
+                            Typeface tf = ds.getTypeface();
+                            ds.setTypeface(Typeface.create(tf, Typeface.BOLD));
+                        }
+                    };
+                    builder.setSpan(clickable, startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    builder.setSpan(new ForegroundColorSpan(0xFF555599), startPos, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    suffixLocal = ", ";
+                }
+            }
+        }
         if (reason.getUserLikes() != null) {
             hasReason = true;
+            builder.append(andSuffix);
             builder.append("liked by ");
             andSuffix = ", ";
             String suffixLocal = "";
