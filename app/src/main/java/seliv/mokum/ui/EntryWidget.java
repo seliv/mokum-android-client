@@ -446,14 +446,15 @@ public class EntryWidget extends RelativeLayout {
     }
 
     private boolean isEntryPrivate(Entry entry, Map<Long, User> users) {
-        if (entry.getReason().getUserPrivate() != null) {
-            return true;
-        }
-        User user = users.get(entry.getUserId());
-        if ("private".equalsIgnoreCase(user.getStatus())) {
-            return true;
-        }
-        return false;
+//        if (entry.getReason().getUserPrivate() != null) {
+//            return true;
+//        }
+//        User user = users.get(entry.getUserId());
+//        if ("private".equalsIgnoreCase(user.getStatus())) {
+//            return true;
+//        }
+//        return false;
+        return !entry.isPublic();
     }
 
     private void constructReasonDescription(SpannableStringBuilder builder, Reason reason, Map<Long, User> users) {

@@ -97,4 +97,8 @@ public class Entry {
     public List<Attachment> getAttachments() {
         return attachments;
     }
+
+    public boolean isPublic() {
+        return is_public;
+    }
 }
