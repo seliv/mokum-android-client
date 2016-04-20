@@ -471,8 +471,8 @@ public class EntryWidget extends RelativeLayout {
                 for (Long userId : reason.getUser()) {
                     User user = users.get(userId);
                     // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
-                    int startPos = builder.length();
                     builder.append(suffixLocal);
+                    int startPos = builder.length();
                     builder.append(user.getDisplayName());
                     final String userUrl = user.getName() + ".json";
                     ClickableSpan clickable = new ClickableSpan() {
@@ -499,8 +499,8 @@ public class EntryWidget extends RelativeLayout {
                 for (Long groupId : reason.getGroup()) {
                     Group group = groups.get(groupId);
                     // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
-                    int startPos = builder.length();
                     builder.append(suffixLocal);
+                    int startPos = builder.length();
                     builder.append(group.getDisplayName());
                     final String groupUrl = group.getUrl() + ".json";
                     ClickableSpan clickable = new ClickableSpan() {
@@ -533,8 +533,8 @@ public class EntryWidget extends RelativeLayout {
             for (Long userId : reason.getUserLikes()) {
                 User user = users.get(userId);
                 // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
-                int startPos = builder.length();
                 builder.append(suffixLocal);
+                int startPos = builder.length();
                 builder.append(user.getDisplayName());
                 final String userUrl = user.getName() + ".json";
                 ClickableSpan clickable = new ClickableSpan() {
@@ -566,8 +566,8 @@ public class EntryWidget extends RelativeLayout {
             for (Long userId : reason.getUserComments()) {
                 User user = users.get(userId);
                 // TODO: Extract a method to add clickable user / other entity, remove cut-n-paste
-                int startPos = builder.length();
                 builder.append(suffixLocal);
+                int startPos = builder.length();
                 builder.append(user.getDisplayName());
                 final String userUrl = user.getName() + ".json";
                 ClickableSpan clickable = new ClickableSpan() {
