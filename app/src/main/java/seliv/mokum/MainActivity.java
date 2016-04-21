@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
 //                    .setAction("Action", null).show();
             TextView textView = new TextView(contentLayout.getContext());
             textView.setText("No JSON returned");
+            contentLayout.removeAllViews();
             contentLayout.addView(textView);
         } else {
 //                Snackbar.make(view, "JSON updated", Snackbar.LENGTH_LONG)
@@ -235,7 +236,8 @@ public class MainActivity extends AppCompatActivity {
                 contentLayout.addView(bottomNavigationWidget);
             } else {
                 TextView textView = new TextView(contentLayout.getContext());
-                textView.setText("This feed has no entries (can be a private feed)");
+                textView.setText("This feed has no entries (possibly a private feed)");
+                contentLayout.removeAllViews();
                 contentLayout.addView(textView);
             }
         }
