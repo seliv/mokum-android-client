@@ -310,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                 subMenu.add(0, HISTORY_MENU_BASE_ID + i, i, url);
             }
         }
+        historyItem.setVisible(false); // Mortals shalt not see this item
     }
 
     private static class GalleryImageLoader extends AsyncTask<String, Void, Bitmap> {
