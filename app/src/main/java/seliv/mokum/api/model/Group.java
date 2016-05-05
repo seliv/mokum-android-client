@@ -16,6 +16,10 @@ public class Group {
         return display_name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String getUrl() {
         return url;
     }

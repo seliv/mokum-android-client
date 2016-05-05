@@ -35,7 +35,10 @@ import seliv.mokum.api.ServerApi;
 import seliv.mokum.api.model.Entry;
 import seliv.mokum.api.model.Group;
 import seliv.mokum.api.model.Page;
+import seliv.mokum.api.model.Subscriptions;
 import seliv.mokum.api.model.User;
+import seliv.mokum.api.model.UserProfile;
+import seliv.mokum.api.model.WhoAmI;
 import seliv.mokum.net.Connection;
 import seliv.mokum.ui.EntryWidget;
 import seliv.mokum.ui.NavigationWidget;
@@ -44,9 +47,11 @@ import seliv.mokum.ui.PostWidget;
 public class MainActivity extends AppCompatActivity {
     private static final String BUNDLE_STATE_VISITED_URLS = "visitedUrls";
     private static final String BUNDLE_STATE_CURRENT_PAGE = "currentPage";
+    private static final String BUNDLE_STATE_USER_PROFILE = "userProfile";
 
     private Stack<String> visitedUrls = new Stack<>();
     private Page currentPage;
+    private UserProfile userProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 for (String url : visitedUrlsState) {
                     visitedUrls.push(url);
                 }
+            }
+            String userProfileState = savedInstanceState.getString(BUNDLE_STATE_USER_PROFILE);
+            if (userProfileState != null) {
+                userProfile = UserProfile.fromJson(userProfileState);
             }
         }
     }
@@ -99,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
         if (currentPage != null) {
             String currentPageState = currentPage.toJson();
             outState.putString(BUNDLE_STATE_CURRENT_PAGE, currentPageState);
+        }
+        if (userProfile != null) {
+            String userProfileState = userProfile.toJson();
+            outState.putString(BUNDLE_STATE_USER_PROFILE, userProfileState);
         }
         super.onSaveInstanceState(outState);
     }
@@ -218,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 MenuInflater inflater = getMenuInflater();
                 inflater.inflate(R.menu.menu_main, navigationWidget.getMenu().getMenu());
                 updateHistoryMenuItem(navigationWidget.getMenu().getMenu());
+                updateGroupsMenuItem(navigationWidget.getMenu().getMenu());
                 navigationWidget.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -240,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
                 contentLayout.removeAllViews();
                 contentLayout.addView(textView);
             }
+            // Let's try to load subscriptions in background while the user is busy viewing some content now
+            new UserProfileLoader().execute();
         }
     }
 
@@ -263,6 +279,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean handleMenuItem(MenuItem item) {
+        if ((item.getItemId() >= GROUP_MENU_BASE_ID) && userProfile != null) {
+            int i = item.getItemId() - GROUP_MENU_BASE_ID;
+            if ((i >= 0) && (i < userProfile.getSubscriptions().getGroupSubscriptions().size() - 1)) {
+//                String url = userProfile.getSubscriptions().getGroupSubscriptions().get(i).getGroup().getUrl() + ".json";
+                // TODO: This is a workaround since Group entris in subscriptions have no URL initialized
+                String url = "/" + userProfile.getSubscriptions().getGroupSubscriptions().get(i).getGroup().getName() + ".json";
+                goToUrl(url);
+                return true;
+            }
+        }
         if (item.getItemId() >= HISTORY_MENU_BASE_ID) {
             int i = item.getItemId() - HISTORY_MENU_BASE_ID;
             if ((i >= 0) && (i < visitedUrls.size() - 1)) {
@@ -296,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static final int HISTORY_MENU_BASE_ID = 1000;
+    private static final int GROUP_MENU_BASE_ID = 2000;
 
     private void updateHistoryMenuItem(Menu menu) {
         MenuItem historyItem = menu.findItem(R.id.menu_history);
@@ -311,6 +338,25 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         historyItem.setVisible(false); // Mortals shalt not see this item
+    }
+
+    private void updateGroupsMenuItem(Menu menu) {
+        MenuItem groupsItem = menu.findItem(R.id.menu_groups);
+        if ((userProfile == null) ||
+                (userProfile.getSubscriptions().getGroupSubscriptions() == null) ||
+                (userProfile.getSubscriptions().getGroupSubscriptions().size() == 0))
+        {
+            groupsItem.setEnabled(false);
+        } else {
+            List<Subscriptions.GroupSubscription> groupSubscriptions = userProfile.getSubscriptions().getGroupSubscriptions();
+            groupsItem.setEnabled(true);
+            SubMenu subMenu = groupsItem.getSubMenu();
+            subMenu.clear();
+            for (int i = 0; i < groupSubscriptions.size(); i++) {
+                Group group = groupSubscriptions.get(i).getGroup();
+                subMenu.add(0, GROUP_MENU_BASE_ID + i, i, group.getName());
+            }
+        }
     }
 
     private static class GalleryImageLoader extends AsyncTask<String, Void, Bitmap> {
@@ -343,4 +389,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private class UserProfileLoader extends AsyncTask<Void, Void, UserProfile> {
+        @Override
+        protected UserProfile doInBackground(Void... params) {
+            WhoAmI whoAmI = ServerApi.askWhoAmI();
+            if (whoAmI == null) {
+                return null;
+            }
+            Subscriptions subscriptions = ServerApi.loadSubscriptions(whoAmI.getUser().getName());
+            if (subscriptions == null) {
+                return null;
+            }
+            return new UserProfile(whoAmI, subscriptions);
+        }
+
+        @Override
+        protected void onPostExecute(UserProfile userProfile) {
+            if (userProfile != null) {
+                MainActivity.this.userProfile = userProfile;
+            }
+        }
+    }
 }

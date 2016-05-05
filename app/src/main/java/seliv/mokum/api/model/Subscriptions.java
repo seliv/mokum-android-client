@@ -9,8 +9,12 @@ public class Subscriptions {
     private List<GroupSubscription> group_subscriptions;
     private List<UserSubscription> subscriptions;
 
-    public static User fromJson(String json) {
-        return GsonUtil.getGsonInstance().fromJson(json, User.class);
+    public static Subscriptions fromJson(String json) {
+        return GsonUtil.getGsonInstance().fromJson(json, Subscriptions.class);
+    }
+
+    public List<GroupSubscription> getGroupSubscriptions() {
+        return group_subscriptions;
     }
 
     public class GroupSubscription {

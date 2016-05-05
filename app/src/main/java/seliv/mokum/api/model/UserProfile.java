@@ -16,6 +16,14 @@ public class UserProfile {
         this.subscriptions = subscriptions;
     }
 
+    public static UserProfile fromJson(String json) {
+        return GsonUtil.getGsonInstance().fromJson(json, UserProfile.class);
+    }
+
+    public String toJson() {
+        return GsonUtil.getGsonInstance().toJson(this);
+    }
+
     public WhoAmI getWhoAmI() {
         return whoAmI;
     }
