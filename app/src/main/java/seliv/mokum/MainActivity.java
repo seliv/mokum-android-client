@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
             int i = item.getItemId() - GROUP_MENU_BASE_ID;
             if ((i >= 0) && (i < userProfile.getSubscriptions().getGroupSubscriptions().size() - 1)) {
 //                String url = userProfile.getSubscriptions().getGroupSubscriptions().get(i).getGroup().getUrl() + ".json";
-                // TODO: This is a workaround since Group entris in subscriptions have no URL initialized
+                // TODO: This is a workaround since Group entries in subscriptions have no URL initialized
                 String url = "/" + userProfile.getSubscriptions().getGroupSubscriptions().get(i).getGroup().getName() + ".json";
                 goToUrl(url);
                 return true;
@@ -354,7 +354,11 @@ public class MainActivity extends AppCompatActivity {
             subMenu.clear();
             for (int i = 0; i < groupSubscriptions.size(); i++) {
                 Group group = groupSubscriptions.get(i).getGroup();
-                subMenu.add(0, GROUP_MENU_BASE_ID + i, i, group.getName());
+                String name = group.getName();
+                if (group.isPrivate()) {
+                    name = "\uD83D\uDD12 " + name;
+                }
+                subMenu.add(0, GROUP_MENU_BASE_ID + i, i, name);
             }
         }
     }

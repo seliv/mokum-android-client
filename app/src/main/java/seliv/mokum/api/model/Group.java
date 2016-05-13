@@ -23,4 +23,8 @@ public class Group {
     public String getUrl() {
         return url;
     }
+
+    public boolean isPrivate() {
+        return "private".equalsIgnoreCase(status);
+    }
 }
