@@ -30,7 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import seliv.mokum.api.ServerApi;
+import seliv.mokum.api.model.Group;
 import seliv.mokum.api.model.Post;
 import seliv.mokum.api.model.PostRequest;
 
@@ -38,6 +43,8 @@ import seliv.mokum.api.model.PostRequest;
  * Created by aselivanov on 2/11/2016.
  */
 public class PostWidget extends LinearLayout {
+    private List<Group> groups = Arrays.asList(((Group)new MyFeedFakeGroup()));
+
     private EditText postEdit;
     private CheckBox commentsDisabledCheckBox;
     private Button postButton;
@@ -128,6 +135,10 @@ public class PostWidget extends LinearLayout {
         this.startAnimation(anim);
     }
 
+    public void setGroups(List<Group> groups) {
+
+    }
+
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -209,5 +220,12 @@ public class PostWidget extends LinearLayout {
 
     interface Listener {
         void onDismissed();
+    }
+
+    private static class MyFeedFakeGroup extends Group {
+        @Override
+        public String getDisplayName() {
+            return "My feed";
+        }
     }
 }
