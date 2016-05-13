@@ -225,13 +225,15 @@ public class MainActivity extends AppCompatActivity {
             Map<Long, Group> groups = page.getGroups();
 
             contentLayout.removeAllViews();
+            Menu navigationMenu;
             if (entires.size() > 0) {
                 NavigationWidget navigationWidget = new NavigationWidget(contentLayout.getContext());
                 navigationWidget.setUrls(page.getOlderEntriesUrl(), page.getNewerEntriesUrl());
                 MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.menu_main, navigationWidget.getMenu().getMenu());
-                updateHistoryMenuItem(navigationWidget.getMenu().getMenu());
-                updateGroupsMenuItem(navigationWidget.getMenu().getMenu());
+                navigationMenu = navigationWidget.getMenu().getMenu();
+                inflater.inflate(R.menu.menu_main, navigationMenu);
+                updateHistoryMenuItem(navigationMenu);
+                updateGroupsMenuItem(navigationMenu);
                 navigationWidget.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -253,9 +255,12 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText("This feed has no entries (possibly a private feed)");
                 contentLayout.removeAllViews();
                 contentLayout.addView(textView);
+                navigationMenu = null;
             }
             // Let's try to load subscriptions in background while the user is busy viewing some content now
-            new UserProfileLoader().execute();
+            if (userProfile == null) {
+                new UserProfileLoader(navigationMenu).execute();
+            }
         }
     }
 
@@ -394,6 +399,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class UserProfileLoader extends AsyncTask<Void, Void, UserProfile> {
+        private final Menu navigationMenu;
+
+        public UserProfileLoader(Menu navigationMenu) {
+            this.navigationMenu = navigationMenu;
+        }
+
         @Override
         protected UserProfile doInBackground(Void... params) {
             WhoAmI whoAmI = ServerApi.askWhoAmI();
@@ -411,6 +422,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(UserProfile userProfile) {
             if (userProfile != null) {
                 MainActivity.this.userProfile = userProfile;
+                if (navigationMenu != null) {
+                    updateGroupsMenuItem(navigationMenu);
+                }
             }
         }
     }
