@@ -244,14 +244,18 @@ public class MainActivity extends AppCompatActivity {
 
             contentLayout.removeAllViews();
             Menu navigationMenu;
+            NavigationWidget navigationWidget;
             if (entires.size() > 0) {
-                NavigationWidget navigationWidget = new NavigationWidget(contentLayout.getContext());
+                navigationWidget = new NavigationWidget(contentLayout.getContext());
                 navigationWidget.setUrls(page.getOlderEntriesUrl(), page.getNewerEntriesUrl());
                 MenuInflater inflater = getMenuInflater();
                 navigationMenu = navigationWidget.getMenu().getMenu();
                 inflater.inflate(R.menu.menu_main, navigationMenu);
                 updateHistoryMenuItem(navigationMenu);
                 updateGroupsMenuItem(navigationMenu);
+                if (userProfile != null) {
+                    navigationWidget.setGroups(userProfile.getSubscribedGroups());
+                }
                 navigationWidget.getMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -274,10 +278,11 @@ public class MainActivity extends AppCompatActivity {
                 contentLayout.removeAllViews();
                 contentLayout.addView(textView);
                 navigationMenu = null;
+                navigationWidget = null;
             }
             // Let's try to load subscriptions in background while the user is busy viewing some content now
             if (userProfile == null) {
-                new UserProfileLoader(navigationMenu).execute();
+                new UserProfileLoader(navigationWidget, navigationMenu).execute();
             }
         }
     }
@@ -417,9 +422,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class UserProfileLoader extends AsyncTask<Void, Void, UserProfile> {
+        private final NavigationWidget navigationWidget;
         private final Menu navigationMenu;
 
-        public UserProfileLoader(Menu navigationMenu) {
+        public UserProfileLoader(NavigationWidget navigationWidget, Menu navigationMenu) {
+            this.navigationWidget = navigationWidget;
             this.navigationMenu = navigationMenu;
         }
 
@@ -440,6 +447,9 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(UserProfile userProfile) {
             if (userProfile != null) {
                 MainActivity.this.userProfile = userProfile;
+                if (navigationWidget != null) {
+                    navigationWidget.setGroups(userProfile.getSubscribedGroups());
+                }
                 if (navigationMenu != null) {
                     updateGroupsMenuItem(navigationMenu);
                 }

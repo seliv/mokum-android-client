@@ -18,6 +18,9 @@
 
 package seliv.mokum.api.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A synthetic entity that doesn't reflect any Mokum JSON entity directly and holds general information
  * related to currently authenticated user. This information is supposed to be "almost static", i.e.
@@ -48,5 +51,16 @@ public class UserProfile {
 
     public Subscriptions getSubscriptions() {
         return subscriptions;
+    }
+
+    public List<Group> getSubscribedGroups() {
+        ArrayList<Group> result = new ArrayList<>();
+        if ((subscriptions != null) && subscriptions.getGroupSubscriptions() != null) {
+            for (int i = 0; i < subscriptions.getGroupSubscriptions().size(); i++) {
+                Group group = subscriptions.getGroupSubscriptions().get(i).getGroup();
+                result.add(group);
+            }
+        }
+        return result;
     }
 }

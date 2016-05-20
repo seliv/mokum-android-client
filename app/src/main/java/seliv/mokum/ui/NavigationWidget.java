@@ -25,7 +25,10 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.util.List;
+
 import seliv.mokum.MainActivity;
+import seliv.mokum.api.model.Group;
 
 /**
  * Created by aselivanov on 3/9/2016.
@@ -67,6 +70,10 @@ public class NavigationWidget extends LinearLayout implements PostWidget.Listene
         int visibility = navigationOnly ? View.INVISIBLE : View.VISIBLE;
         postButton.setVisibility(visibility);
         menuButton.setVisibility(visibility);
+    }
+
+    public void setGroups(List<Group> groups) {
+        postWidget.setGroups(groups);
     }
 
     public PopupMenu getMenu() {
