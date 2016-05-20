@@ -46,6 +46,7 @@ import seliv.mokum.api.model.PostRequest;
 public class PostWidget extends LinearLayout {
     private List<Group> groups = Arrays.asList((Group)new MyFeedFakeGroup());
 
+    private GroupListWidget groupListWidget;
     private EditText postEdit;
     private CheckBox commentsDisabledCheckBox;
     private Button postButton;
@@ -64,6 +65,9 @@ public class PostWidget extends LinearLayout {
     private void initChildren(Context context) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams paramsFill = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+        groupListWidget = new GroupListWidget(context);
+        groupListWidget.setLayoutParams(paramsFill);
 
         postEdit = new EditText(context);
         postEdit.setLayoutParams(paramsFill);
@@ -104,6 +108,7 @@ public class PostWidget extends LinearLayout {
         controlsLayout.addView(postButton);
         controlsLayout.addView(postProgressBar);
 
+        addView(groupListWidget);
         addView(postEdit);
         addView(resultText);
         addView(controlsLayout);
