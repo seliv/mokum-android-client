@@ -36,15 +36,14 @@ import seliv.mokum.api.model.Group;
  * Created by aselivanov on 5/21/2016.
  */
 public class GroupListWidget extends LinearLayout {
-    private final List<Group> groups;
+    private List<Group> groups = Collections.emptyList();
 
     private TextView toLabel;
     private Button addButton;
     private LinearLayout groupsView;
 
-    public GroupListWidget(Context context, List<Group> groups) {
+    public GroupListWidget(Context context) {
         super(context);
-        this.groups = Collections.unmodifiableList(groups);
         initChildren(context);
     }
 
@@ -70,23 +69,25 @@ public class GroupListWidget extends LinearLayout {
         addView(groupsView);
         addView(addButton);
 
-        GroupLineWidget groupLineWidget = new GroupLineWidget(context, groups);
-        groupLineWidget.setName("Test Group");
-        groupsView.addView(groupLineWidget);
-
         addButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
-
-        setVisibility(View.GONE); // Invisible until group list is initialized
+        setGroups(groups);
     }
 
     public void setGroups(List<Group> groups) {
+        groupsView.removeAllViews();
+        this.groups = Collections.unmodifiableList(groups);
         if (groups.size() > 0) {
             setVisibility(View.VISIBLE);
+            GroupLineWidget groupLineWidget = new GroupLineWidget(getContext(), groups);
+            groupLineWidget.setName("Test Group");
+            groupsView.addView(groupLineWidget);
+        } else {
+            setVisibility(View.GONE);
         }
     }
 
@@ -109,23 +110,15 @@ public class GroupListWidget extends LinearLayout {
             removeButton.setText("X");
             removeButton.setLayoutParams(params);
             nameView = new Spinner(context);
-//            nameView.setText("");
             nameView.setLayoutParams(paramsFill);
             addView(removeButton);
             addView(nameView);
-//            nameView.setOnClickListener(new OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    nameView.showDropDown();
-//                }
-//            });
 
             ArrayList<String> groupNames = new ArrayList<>(groups.size());
             for (Group group : groups) {
                 groupNames.add(group.getName());
             }
-            adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, groupNames); // new String[]{"First", "Second", "Test Group", "Third", "Fourth"}
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, groupNames);
             nameView.setAdapter(adapter);
         }
 
