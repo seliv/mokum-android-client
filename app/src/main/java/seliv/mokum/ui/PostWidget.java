@@ -66,7 +66,7 @@ public class PostWidget extends LinearLayout {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams paramsFill = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 
-        groupListWidget = new GroupListWidget(context);
+        groupListWidget = new GroupListWidget(context, groups);
         groupListWidget.setLayoutParams(paramsFill);
 
         postEdit = new EditText(context);
@@ -145,6 +145,11 @@ public class PostWidget extends LinearLayout {
         this.groups = new ArrayList<>();
         this.groups.add(new MyFeedFakeGroup());
         this.groups.addAll(groups);
+
+        LinearLayout.LayoutParams paramsFill = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        groupListWidget = new GroupListWidget(getContext(), groups);
+        groupListWidget.setLayoutParams(paramsFill);
+        groupListWidget.setGroups(this.groups);
     }
 
     public void setListener(Listener listener) {

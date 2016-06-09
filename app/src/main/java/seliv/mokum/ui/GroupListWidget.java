@@ -20,20 +20,31 @@ package seliv.mokum.ui;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import seliv.mokum.api.model.Group;
 
 /**
  * Created by aselivanov on 5/21/2016.
  */
 public class GroupListWidget extends LinearLayout {
+    private final List<Group> groups;
+
     private TextView toLabel;
     private Button addButton;
     private LinearLayout groupsView;
 
-    public GroupListWidget(Context context) {
+    public GroupListWidget(Context context, List<Group> groups) {
         super(context);
+        this.groups = Collections.unmodifiableList(groups);
         initChildren(context);
     }
 
@@ -59,7 +70,7 @@ public class GroupListWidget extends LinearLayout {
         addView(groupsView);
         addView(addButton);
 
-        GroupLineWidget groupLineWidget = new GroupLineWidget(context);
+        GroupLineWidget groupLineWidget = new GroupLineWidget(context, groups);
         groupLineWidget.setName("Test Group");
         groupsView.addView(groupLineWidget);
 
@@ -69,6 +80,14 @@ public class GroupListWidget extends LinearLayout {
 
             }
         });
+
+        setVisibility(View.GONE); // Invisible until group list is initialized
+    }
+
+    public void setGroups(List<Group> groups) {
+        if (groups.size() > 0) {
+            setVisibility(View.VISIBLE);
+        }
     }
 
     private void addGroupLine() {
@@ -76,10 +95,11 @@ public class GroupListWidget extends LinearLayout {
     }
 
     private static class GroupLineWidget extends LinearLayout {
+        ArrayAdapter<String> adapter;
         private Button removeButton;
-        private TextView nameView;
+        private Spinner nameView;
 
-        public GroupLineWidget(Context context) {
+        public GroupLineWidget(Context context, List<Group> groups) {
             super(context);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
             LinearLayout.LayoutParams paramsFill = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -88,15 +108,34 @@ public class GroupListWidget extends LinearLayout {
             removeButton = new Button(context);
             removeButton.setText("X");
             removeButton.setLayoutParams(params);
-            nameView = new TextView(context);
-            nameView.setText("");
+            nameView = new Spinner(context);
+//            nameView.setText("");
             nameView.setLayoutParams(paramsFill);
             addView(removeButton);
             addView(nameView);
+//            nameView.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    nameView.showDropDown();
+//                }
+//            });
+
+            ArrayList<String> groupNames = new ArrayList<>(groups.size());
+            for (Group group : groups) {
+                groupNames.add(group.getName());
+            }
+            adapter = new ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, groupNames); // new String[]{"First", "Second", "Test Group", "Third", "Fourth"}
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            nameView.setAdapter(adapter);
         }
 
         public void setName(String name) {
-            nameView.setText(name);
+            if (name != null) {
+                int spinnerPosition = adapter.getPosition(name);
+                if (spinnerPosition >= 0) {
+                    nameView.setSelection(spinnerPosition);
+                }
+            }
         }
     }
 }
