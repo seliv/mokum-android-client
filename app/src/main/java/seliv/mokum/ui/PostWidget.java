@@ -98,6 +98,12 @@ public class PostWidget extends LinearLayout {
         resultText.setLayoutParams(params);
         resultText.setVisibility(View.GONE);
 
+        LinearLayout attachmentsLayout = new LinearLayout(context);
+        attachmentsLayout.setOrientation(LinearLayout.HORIZONTAL);
+        attachmentsLayout.setLayoutParams(paramsFill);
+
+        attachmentsLayout.addView(new AttachmentsWidget(context));
+
         LinearLayout controlsLayout = new LinearLayout(context);
         controlsLayout.setOrientation(LinearLayout.HORIZONTAL);
         controlsLayout.setLayoutParams(paramsFill);
@@ -111,6 +117,7 @@ public class PostWidget extends LinearLayout {
         addView(groupListWidget);
         addView(postEdit);
         addView(resultText);
+        addView(attachmentsLayout);
         addView(controlsLayout);
 
         postButton.setOnClickListener(new OnClickListener() {
