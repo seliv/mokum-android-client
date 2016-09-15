@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -65,6 +66,14 @@ public class Connection {
             os.close();
         }
 
+        return getJsonWithCode(urlConnection);
+    }
+
+    public JsonWithCode doPostMultipart(String urlString, byte[] content) throws IOException {
+        HttpURLConnection urlConnection = initUrlConnection(urlString);
+        MultipartUtility multipart = new MultipartUtility(urlConnection);
+        multipart.addFilePart("attachment[attachment][]", new File("C:\\"));
+        urlConnection = multipart.finish();
         return getJsonWithCode(urlConnection);
     }
 

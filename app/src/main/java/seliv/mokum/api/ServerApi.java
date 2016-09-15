@@ -54,6 +54,8 @@ public class ServerApi {
     private static final String WHO_AM_I_URL = API_URL + "/whoami.json";
     private static final String SUBSCRIPTIONS_URL = ROOT_URL + "/%s/subscriptions.json";
 
+    private static final String ATTACHMENTS_URL = API_URL + "/attachments.json";
+
     private static Connection connection;
 
     @Deprecated
